@@ -1,37 +1,48 @@
 #include <bits/stdc++.h>
 
-using std::cin;
-using std::cout;
-using std::endl;
+using namespace std;
 
-int iMap[100][100];
-int d[100] = {0};
 
-void gen(int n) {
-    srand((unsigned) time(nullptr));
-    cout << "矩阵：" << endl;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            iMap[i][j] = rand() % 2;
-            cout << iMap[i][j] << (j == n - 1 ? "\n" : " ");
+const int N = 510;
+
+int color[N], graph[N][N];
+
+bool bfs(int s, int n) {
+    queue<int> q;
+    q.push(s);
+    color[s] = 1;
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
+        for (int i = 1; i <= n; i++) {
+            if (graph[from][i] && color[i] == -1) {
+                q.push(i);
+                color[i] = !color[from];
+            }
+            if (graph[from][i] && color[from] == color[i])
+                return false;
         }
     }
-}
-
-void getDegrees(int n) {
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            if (iMap[i][j] == 1) {
-                d[i]++;
-                d[j]++;
-            }
-    for (int i = 0; i < n; i++) cout << i << "'s:  " << d[i] << endl;
+    return true;
 }
 
 int main() {
-    int n;
-    cin >> n;
-    gen(n);
-    getDegrees(n);
+    int n, m, a, b, i;
+    memset(color, -1, sizeof(color));
+    cin >> n >> m;
+    for (i = 0; i < m; i++) {
+        cin >> a >> b;
+        graph[a][b] = graph[b][a] = 1;
+    }
+    bool flag = false;
+    for (i = 1; i <= n; i++)
+        if (color[i] == -1 && !bfs(i, n)) {
+            flag = true;
+            break;
+        }
+    if (flag)
+        cout << "no" << endl;
+    else
+        cout << "yes" << endl;
     return 0;
 }
