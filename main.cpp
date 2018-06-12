@@ -5,42 +5,52 @@ using std::cout;
 using std::endl;
 
 int main() {
-    int e[10][10], dis[10], book[10], i, j, n, m, t1, t2, t3, u, v, min;
-    int maxN = 2147483647;
-    cin >> n >> m;
-
-    for (i = 1; i <= n; i++)
-        for (j = 1; j <= n; j++)
-            if (i == j) e[i][j] = 0;
-            else e[i][j] = maxN;
-    for (i = 1; i <= m; i++) {
-        scanf("%d %d %d", &t1, &t2, &t3);
-        e[t1][t2] = t3;
-    }
-    int start, end;
-    cout << "start:";
-    cin >> start;
-    cout << "end:";
-    cin >> end;
-    for (i = 0; i < n; i++) dis[i + 1] = e[start][i + 1];
-    for (i = 0; i < n; i++) book[i + 1] = 0;
-    book[1] = 1;
-    for (i = 0; i < n - 1; i++) {
-        min = maxN;
-        for (j = 1; j <= n; j++) {
-            if (book[j] == 0 && dis[j] < min) {
-                min = dis[j];
-                u = j;
+    int n, is = 0;
+    while (cin >> n) {
+        int p[n], cnt[n];
+        for (int i = 0; i < n; i++) {
+            cin >> p[i];
+            cnt[i] = 1;
+        }
+        for (int i = 0; i < n; i++) {
+            if (i == 0) {
+                if (p[i] > p[i + 1] && i != n - 1 && cnt[i] <= cnt[i + 1])
+                    cnt[i] = cnt[i + 1] + 1;
+            } else if (i == n - 1) {
+                if (p[i] > p[i - 1] && cnt[i] <= cnt[i - 1])
+                    cnt[i] = cnt[i - 1] + 1;
+                if (p[i - 1] > p[i] && cnt[i - 1] <= cnt[i])
+                    cnt[i - 1] = cnt[i] + 1;
+            } else {
+                if (p[i] > p[i - 1] && cnt[i] <= cnt[i - 1])
+                    cnt[i] = cnt[i - 1] + 1;
+                if (p[i] > p[i + 1] && cnt[i] <= cnt[i + 1])
+                    cnt[i] = cnt[i + 1] + 1;
+                if (p[i - 1] > p[i] && cnt[i - 1] <= cnt[i])
+                    cnt[i - 1] = cnt[i] + 1;
             }
         }
-        book[u] = 1;
-        for (v = 1; v <= n; v++) {
-            if (e[u][v] < maxN) {
-                if (dis[v] > dis[u] + e[u][v])
-                    dis[v] = dis[u] + e[u][v];
+        for (int i = n - 1; i >= 0; i--) {
+            if (i == 0) {
+                if (p[i] > p[i + 1] && i != n - 1 && cnt[i] <= cnt[i + 1])
+                    cnt[i] = cnt[i + 1] + 1;
+            } else if (i == n - 1) {
+                if (p[i] > p[i - 1] && cnt[i] <= cnt[i - 1])
+                    cnt[i] = cnt[i - 1] + 1;
+                if (p[i - 1] > p[i] && cnt[i - 1] <= cnt[i])
+                    cnt[i - 1] = cnt[i] + 1;
+            } else {
+                if (p[i] > p[i - 1] && cnt[i] <= cnt[i - 1])
+                    cnt[i] = cnt[i - 1] + 1;
+                if (p[i] > p[i + 1] && cnt[i] <= cnt[i + 1])
+                    cnt[i] = cnt[i + 1] + 1;
+                if (p[i - 1] > p[i] && cnt[i - 1] <= cnt[i])
+                    cnt[i - 1] = cnt[i] + 1;
             }
         }
+        int total = 0;
+        for (int i = 0; i < n; i++) total += cnt[i];
+        cout << total << endl;
     }
-    cout << dis[end] << endl;
     return 0;
 }
