@@ -2,42 +2,31 @@
 
 using namespace std;
 
-string padLeft(string src, int length, char padding = ' ') {
-    if (length <= src.length()) return src;
-    int len = length - src.length();
-    src.insert(0, len, padding);
-    return src;
-}
-
-string padRight(string src, int length, char padding = ' ') {
-    if (length <= src.length()) return src;
-    int len = length - src.length();
-    src.insert(src.length(), len, padding);
+string cpy(string src, int startIndex = 0, int endIndex = 999) {
+    if (endIndex == 999) endIndex = src.length() - 1;
+    if (startIndex >= src.length() || startIndex < 0) return "";
+    if (endIndex >= src.length() || endIndex < startIndex) return "";
+    src = src.substr(startIndex, endIndex - startIndex + 1);
     return src;
 }
 
 int main() {
-    int num, length;
-    char padding;
+    int num, length, index, startIndex, endIndex;
     string src, dest;
 
     while (cin >> num) {
         switch (num) {
-            case 11:
-                cin >> src >> length;
-                cout << padLeft(src, length) << endl;
+            case 1:
+                cin >> src;
+                cout << cpy(src) << endl;
                 break;
-            case 12:
-                cin >> src >> length >> padding;
-                cout << padLeft(src, length, padding) << endl;
+            case 2:
+                cin >> src >> startIndex;
+                cout << cpy(src, startIndex) << endl;
                 break;
-            case 21:
-                cin >> src >> length;
-                cout << padRight(src, length) << endl;
-                break;
-            case 22:
-                cin >> src >> length >> padding;
-                cout << padRight(src, length, padding) << endl;
+            case 3:
+                cin >> src >> startIndex >> endIndex;
+                cout << cpy(src, startIndex, endIndex) << endl;
                 break;
         }
     }
