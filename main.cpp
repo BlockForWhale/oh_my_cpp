@@ -2,26 +2,29 @@
 
 using namespace std;
 
-void string_analysis(char *ptr, int &total, int &cap, int &sma, int &num, int &oth) {
-    for (int i = 0; i < strlen(ptr); i++) {
-        total++;
-        if (ptr[i] >= 'A' && ptr[i] <= 'Z') cap++;
-        else if (ptr[i] >= 'a' && ptr[i] <= 'z') sma++;
-        else if (ptr[i] >= '0' && ptr[i] <= '9') num++;
-        else oth++;
+int myatoi(char *string) {
+    int num = 0;
+    int s = '+';
+    if (*string == '-') {
+        s = '-';
+        string++;
     }
+    if (*string == '+') {
+        s = '+';
+        string++;
+    }
+    while (*string >= '0' && *string <= '9') {
+        if (*string == 0) break;
+        num = num * 10 + (*string - '0');
+        string++;
+    }
+    int r = (s == '+' ? 1 : -1) * num;
+    return r;
 }
 
 int main() {
     char str[100];
-    int total, cap, sma, num, oth;
-    total = cap = sma = num = oth = 0;
-    cin.get(str, 100);
-    string_analysis(str, total, cap, sma, num, oth);
-    cout << cap << endl;
-    cout << sma << endl;
-    cout << num << endl;
-    cout << oth << endl;
-    cout << total << endl;
+    while (cin >> str)
+        cout << myatoi(str) << endl;
     return 0;
 }
