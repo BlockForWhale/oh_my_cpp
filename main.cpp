@@ -2,33 +2,26 @@
 
 using namespace std;
 
-string cpy(string src, int startIndex = 0, int endIndex = 999) {
-    if (endIndex == 999) endIndex = src.length() - 1;
-    if (startIndex >= src.length() || startIndex < 0) return "";
-    if (endIndex >= src.length() || endIndex < startIndex) return "";
-    src = src.substr(startIndex, endIndex - startIndex + 1);
-    return src;
+void string_analysis(char *ptr, int &total, int &cap, int &sma, int &num, int &oth) {
+    for (int i = 0; i < strlen(ptr); i++) {
+        total++;
+        if (ptr[i] >= 'A' && ptr[i] <= 'Z') cap++;
+        else if (ptr[i] >= 'a' && ptr[i] <= 'z') sma++;
+        else if (ptr[i] >= '0' && ptr[i] <= '9') num++;
+        else oth++;
+    }
 }
 
 int main() {
-    int num, length, index, startIndex, endIndex;
-    string src, dest;
-
-    while (cin >> num) {
-        switch (num) {
-            case 1:
-                cin >> src;
-                cout << cpy(src) << endl;
-                break;
-            case 2:
-                cin >> src >> startIndex;
-                cout << cpy(src, startIndex) << endl;
-                break;
-            case 3:
-                cin >> src >> startIndex >> endIndex;
-                cout << cpy(src, startIndex, endIndex) << endl;
-                break;
-        }
-    }
+    char str[100];
+    int total, cap, sma, num, oth;
+    total = cap = sma = num = oth = 0;
+    cin.get(str, 100);
+    string_analysis(str, total, cap, sma, num, oth);
+    cout << cap << endl;
+    cout << sma << endl;
+    cout << num << endl;
+    cout << oth << endl;
+    cout << total << endl;
     return 0;
 }
