@@ -1,70 +1,73 @@
 #include <bits/stdc++.h>
 
-using std::cin;
-using std::cout;
-using std::endl;
+using namespace std;
 
-class Points {
-private:
-    int x, y;
+class Date {
+    int year;
+    int month;
+    int day;
 public:
-    Points(int a = 0, int b = 0) {
-        x = a;
-        y = b;
-    }
+    Date(int y, int m, int d) : year(y), month(m), day(d) {};
 
-    void setXY(int a, int b) {
-        x = a;
-        y = b;
-    }
+    int getYear() const { return year; }
 
-    int getX() { return x; }
+    int getMonth() const { return month; }
 
-    int getY() { return y; }
+    int getDay() const { return day; }
 };
 
-class Rectangle {
-private:
-    Points point1, point2, point3, point4;
-public:
-    Rectangle(Points one, Points four) {
-        point1 = one;
-        point4 = four;
-        point3 = Points(one.getX(), four.getY());
-        point2 = Points(four.getX(), one.getY());
+int getDaysOfMonth(int y, int m) {
+    switch (m) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            return 31;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            return 30;
+        case 2:
+        default:
+            return y % 4 != 0 ? 28 : (y % 100 != 0 ? 29 : (y % 400 != 0 ? 28 : 29));
     }
+}
 
-    Rectangle(int x1, int y1, int x2, int y2) {
-        point1 = Points(x1, y1);
-        point3 = Points(x1, y2);
-        point2 = Points(x2, y1);
-        point4 = Points(x2, y2);
+int calDay(const Date &d1, const Date &d2) {
+    if (d1.getYear() < d2.getYear())
+        return calDay(d2, d1);
+    if (d1.getYear() == d2.getYear() && d1.getMonth() < d2.getMonth())
+        return calDay(d2, d1);
+    if (d1.getYear() == d2.getYear() && d1.getMonth() == d2.getMonth() && d1.getDay() < d2.getDay())
+        return calDay(d2, d1);
+    int sum = 0, y = d2.getYear(), m = d2.getMonth(), d = d2.getDay();
+    while (d1.getYear() != y || d1.getMonth() != m || d1.getDay() != d) {
+        d++;
+        if (d > getDaysOfMonth(y, m)) {
+            m++;
+            d = 1;
+        }
+        if (m > 12) {
+            y++;
+            m = 1;
+        }
+        ++sum;
     }
-
-    void printPoint() {
-        cout << point1.getX() << ' ' << point1.getY() << endl;
-        cout << point2.getX() << ' ' << point2.getY() << endl;
-        cout << point3.getX() << ' ' << point3.getY() << endl;
-        cout << point4.getX() << ' ' << point4.getY() << endl;
-    }
-
-    int getArea() {
-        int x = point1.getX() - point4.getX();
-        if (x < 0) x = 0 - x;
-        int y = point1.getY() - point4.getY();
-        if (y < 0) y = 0 - y;
-        return x * y;
-    }
-};
+    return sum;
+}
 
 int main() {
-    int x1, y1, x2, y2;
-    cin >> x1 >> y1;
-    cin >> x2 >> y2;
-    Points p1(x1, y1), p4(x2, y2); //定义两个点
-    Rectangle r1(p1, p4);//用两个点做参数，声明一个对角顶点分别为p1,p4的矩形对象r1
-    r1.printPoint(); //输出矩形对象r1的4个顶点坐标，
-    cout << r1.getArea(); //输出矩形对象r1的面积
+    int y1, m1, d1, y2, m2, d2;
+    cin >> y1 >> m1 >> d1;
+    cin >> y2 >> m2 >> d2;
+    Date date1(y1, m1, d1);
+    Date date2(y2, m2, d2);
+    cout << calDay(date1, date2);
+
     return 0;
 
 }
