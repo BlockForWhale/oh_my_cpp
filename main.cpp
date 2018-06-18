@@ -2,121 +2,153 @@
 
 using namespace std;
 
-class Point {
+class Date {
 private:
-    int x = 0;
-    int y = 0;
+    int year;
+    int month;
+    int day;
 public:
-    Point() = default;
-
-    Point(int x, int y) {
-        this->x = x;
-        this->y = y;
+    Date(int y, int m, int d) {
+        year = y;
+        month = m;
+        day = d;
     }
 
-    int getX() {
-        return x;
+    int getYear() { return year; }
+
+    int getMonth() { return month; }
+
+    int getDay() { return day; }
+
+    static int getDaysOfMonth(int y, int m) {
+        switch (m) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            case 2:
+            default:
+                return y % 4 != 0 ? 28 : (y % 100 != 0 ? 29 : (y % 400 != 0 ? 28 : 29));
+        }
     }
 
-    int getY() {
-        return y;
-    }
+    static int getDaysOfYear(int y) { return y % 4 != 0 ? 365 : (y % 100 != 0 ? 366 : (y % 400 != 0 ? 365 : 366)); }
 
-};
-
-class Rectangle {
-private:
-    int num;
-    Point topLeft = Point(0, 0);
-    int width;
-    int height;
-public:
-    Rectangle() { num = 0, width = 0, height = 0; }
-
-    int getNum() {
-        return num;
-    }
-
-    Rectangle(int num, int x, int y, int width, int height) {
-        this->num = num;
-        this->width = width;
-        this->height = height;
-        this->topLeft = Point(x, y);
-    }
-
-    int getArea() {
-        return (width * height);
-    }
-
-    bool isIn(Point p) {
-        return p.getX() > topLeft.getX() && p.getX() < (topLeft.getX() + width) && p.getY() > topLeft.getY() &&
-               p.getY() < (topLeft.getY() + height);
-    }
-};
-
-class RectangleCollection {
-private:
-    Rectangle rects[100];   //一个包含长方形的数组，最多100个元素
-    int count = 0;            //以上数组中长方形的实际个数
-public:
-    RectangleCollection() = default;
-
-    void addRectangle(Rectangle r)//添加一个长方形到数组中，并count++
-    {
-        rects[count] = r;
-        count++;
-    }
-
-    void deleteRectangle(int num) //根据num从数组中删除一个长方形（该长方形的编号等于num）
-    {
-        for (int i = 0; i < count; i++) {
-            if (rects[i].getNum() == num) {
-                for (int j = i; j < count - 1; j++)
-                    rects[j] = rects[j + 1];
-                count--;
-                break;
+    void addDay(int days) {
+        for (int i = 1; i <= days; i++) {
+            day++;
+            if (day > getDaysOfMonth(year, month)) {
+                month++;
+                day = 1;
+            }
+            if (month > 12) {
+                year++;
+                month = 1;
             }
         }
     }
 
-    int inRects(Point p)//根据传入的p，判断p位于rects数组中的哪些长方形之内，返回这些长方形面积之和。
-    {
-        int area = 0;
-        for (int i = 0; i < count; i++) {
-            if (rects[i].isIn(p)) {
-                area += rects[i].getArea();
-            }
+    void addMonth(int months) {
+        month += months;
+        while (month > 12) {
+            ++year;
+            month -= 12;
         }
-        return area;
+        if (day > getDaysOfMonth(year, month))
+            day = getDaysOfMonth(year, month);
+    }
+
+    void addYear(int years) {
+        for (int i = 1; i <= years; i++) {
+            year++;
+        }
+        if (day > getDaysOfMonth(year, month)) {
+            day = getDaysOfMonth(year, month);
+        }
+    }
+
+    int Subtract(Date d2) {
+        int sum;
+        if (year < d2.getYear()) {
+            sum = 0;
+            while (year != d2.getYear() || month != d2.getMonth() || day != d2.getDay()) {
+                this->addDay(1);
+                sum++;
+            }
+            return 0 - sum;
+        }
+        if (year == d2.getYear() && month < d2.getMonth()) {
+            sum = 0;
+            while (year != d2.getYear() || month != d2.getMonth() || day != d2.getDay()) {
+                this->addDay(1);
+                sum++;
+            }
+            return 0 - sum;
+        }
+        if (year == d2.getYear() && month == d2.getMonth() && day < d2.getDay()) {
+            sum = 0;
+            while (year != d2.getYear() || month != d2.getMonth() || day != d2.getDay()) {
+                this->addDay(1);
+                sum++;
+            }
+            return 0 - sum;
+        }
+        sum = 0;
+        while (year != d2.getYear() || month != d2.getMonth() || day != d2.getDay()) {
+            d2.addDay(1);
+            ++sum;
+        }
+        return sum;
+    }
+
+    int getWeekDay() {
+        return 0;
     }
 };
-
 
 int main() {
-    int num, topLeftX, topLeftY, width, height;
-    int px, py;
+    char WeekDayNames[][15] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
     int op;
-    RectangleCollection rc;
-    Rectangle r;
-    Point p;
     while (cin >> op) {
-        switch (op) {
-            case 1:
-                cin >> num >> topLeftX >> topLeftY >> width >> height;
-                r = Rectangle(num, topLeftX, topLeftY, width, height);
-                rc.addRectangle(r);
-                break;
-            case 2:
-                cin >> num;
-                rc.deleteRectangle(num);
-                break;
-            case 3:
-                cin >> px >> py;
-                p = Point(px, py);
-                cout << rc.inRects(p) << endl;
-                break;
-            default:
-                break;
+        int year, month, day;
+        int y3, m3, d3;
+        int n;
+        if (op == 1) {
+            cin >> year >> month >> day >> n;
+            Date d2 = Date(year, month, day);
+            d2.addDay(n);
+            cout << d2.getYear() << " " << d2.getMonth() << " " << d2.getDay() << endl;
+        } else if (op == 2) {
+            cin >> year >> month >> day >> n;
+            Date d2 = Date(year, month, day);
+            d2.addMonth(n);
+            cout << d2.getYear() << " " << d2.getMonth() << " " << d2.getDay() << endl;
+        } else if (op == 3) {
+            cin >> year >> month >> day >> n;
+            Date d2 = Date(year, month, day);
+            d2.addYear(n);
+            cout << d2.getYear() << " " << d2.getMonth() << " " << d2.getDay() << endl;
+        } else if (op == 4) {
+            cin >> year >> month >> day >> y3 >> m3 >> d3;
+            Date d2 = Date(year, month, day);
+            Date s2 = Date(y3, m3, d3);
+            n = d2.Subtract(s2);
+            cout << n << endl;
+        } else if (op == 5) {
+            cin >> year >> month >> day;
+            Date d2 = Date(year, month, day);
+            int w = d2.getWeekDay();
+            cout << WeekDayNames[w] << endl;
         }
     }
     return 0;
