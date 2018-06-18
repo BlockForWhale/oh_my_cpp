@@ -4,51 +4,67 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-char week_name[8][10] = {"", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-
-int getDaysOfYear(int y) {
-    return y % 4 != 0 ? 365 : (y % 100 != 0 ? 366 : (y % 400 != 0 ? 365 : 366));
-}
-
-int getDaysOfMonth(int y, int m) {
-    switch (m) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
-            return 31;
-        case 4:
-        case 6:
-        case 9:
-        case 11:
-            return 30;
-        case 2:
-        default:
-            return (y % 4 != 0 ? 28 : (y % 100 != 0 ? 29 : (y % 400 != 0 ? 28 : 29)));
+class Points {
+private:
+    int x, y;
+public:
+    Points(int a = 0, int b = 0) {
+        x = a;
+        y = b;
     }
-}
 
-int getDaysFrom(int y, int m, int d) {
-    int days = 0;
-    for (int i = 1753; i < y; i++) {
-        days += getDaysOfYear(i);
+    void setXY(int a, int b) {
+        x = a;
+        y = b;
     }
-    for (int i = 1; i < m; i++) {
-        days += getDaysOfMonth(y, i);
+
+    int getX() { return x; }
+
+    int getY() { return y; }
+};
+
+class Rectangle {
+private:
+    Points point1, point2, point3, point4;
+public:
+    Rectangle(Points one, Points four) {
+        point1 = one;
+        point4 = four;
+        point3 = Points(one.getX(), four.getY());
+        point2 = Points(four.getX(), one.getY());
     }
-    days += (d - 1);
-    return days;
-}
+
+    Rectangle(int x1, int y1, int x2, int y2) {
+        point1 = Points(x1, y1);
+        point3 = Points(x1, y2);
+        point2 = Points(x2, y1);
+        point4 = Points(x2, y2);
+    }
+
+    void printPoint() {
+        cout << point1.getX() << ' ' << point1.getY() << endl;
+        cout << point2.getX() << ' ' << point2.getY() << endl;
+        cout << point3.getX() << ' ' << point3.getY() << endl;
+        cout << point4.getX() << ' ' << point4.getY() << endl;
+    }
+
+    int getArea() {
+        int x = point1.getX() - point4.getX();
+        if (x < 0) x = 0 - x;
+        int y = point1.getY() - point4.getY();
+        if (y < 0) y = 0 - y;
+        return x * y;
+    }
+};
 
 int main() {
-    int y, m, d;
-    while (cin >> y >> m >> d) {
-        int days = getDaysFrom(y, m, d);
-        int week = days % 7 + 1;
-        cout << week_name[week] << endl;
-    }
+    int x1, y1, x2, y2;
+    cin >> x1 >> y1;
+    cin >> x2 >> y2;
+    Points p1(x1, y1), p4(x2, y2); //定义两个点
+    Rectangle r1(p1, p4);//用两个点做参数，声明一个对角顶点分别为p1,p4的矩形对象r1
+    r1.printPoint(); //输出矩形对象r1的4个顶点坐标，
+    cout << r1.getArea(); //输出矩形对象r1的面积
     return 0;
+
 }
