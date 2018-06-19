@@ -1,89 +1,67 @@
 #include <bits/stdc++.h>
-#include <utility>
 
 using namespace std;
 
 class Student {
 private:
-    int number;//学号
-    string name;//名字
-    double chinese;//语文成绩
-    double math;//数学成绩
-    double average;//平均成绩
+    int norm, ex, final, overall;
+    char name[15];
 public:
-    Student() {}
+    void init(char *name1, int nor1, int ex1, int fin1) {
+        strcpy(name, name1);
+        norm = nor1;
+        ex = ex1;
+        final = fin1;
+    }
 
-    Student(int numbers, string names) : number(numbers), name(names) {}
-
-    bool setChinese(double num) {
-        if (num > 0 && num <= 100) {
-            chinese = num;
-            return true;
+    void fun() {
+        double overalls = 0;
+        overalls += (norm * 0.2);
+        overalls += (ex * 0.25);
+        overalls += (final * 0.55);
+        int intPart = (int) overalls;
+        double ss = overalls - intPart;
+        if (ss >= 0.5) {
+            intPart++;
         }
-        chinese = 0;
-        return false;
+        if (final >= 50)
+            overall = intPart;
+        else overall = final;
     }
 
-    bool setMath(double num) {
-        if (num >= 0 && num <= 100) {
-            math = num;
-            return true;
-        }
-        math = 0;
-        return false;
+    void print() {
+        cout << name << ' ' << norm << ' ' << ex << ' ' << final << ' ' << overall << endl;
     }
 
-    double getChinese() { return chinese; }
-
-    double getMath() { return math; }
-
-    int getNumber() { return number; }
-
-    string getName() { return name; }
-
-    double getAverage() {
-        average = math + chinese;
-        average = average / 2.0;
-        return average;
-    }
+    friend void sort(Student st[], int n);
 };
 
-void findStudent(Student stu[], int n, string search) {
-    bool finds = false;
-    for (int i = 0; i < n; i++) {
-        if (stu[i].getName().find(search, 0) != stu[i].getName().npos) {
-            finds = true;
-            cout << stu[i].getNumber()
-                 << ' '
-                 << stu[i].getName()
-                 << ' '
-                 << stu[i].getChinese()
-                 << ' '
-                 << stu[i].getMath()
-                 << ' '
-                 << stu[i].getAverage()
-                 << endl;
-        }
-    }
-    if (!finds) {
-        cout << "Not found." << endl;
-    }
+void sort(Student st[], int n) {
+    Student t;
+    for (int i = 0; i < n - 1; i++)
+        for (int j = i + 1; j < n; j++)
+            if (st[i].overall < st[j].overall) {
+                t = st[i];
+                st[i] = st[j];
+                st[j] = t;
+            }
 }
 
 int main() {
-    int n, i;
-    int number;
-    string name, searchName;
-    double math, chinese;
+    int n;
+    int norm, ex, final;
+    char name[15];
     cin >> n;
     Student stu[n];
-    for (i = 0; i < n; i++) {
-        cin >> number >> name >> chinese >> math;
-        stu[i] = Student(number, name);
-        stu[i].setChinese(chinese);
-        stu[i].setMath(math);
+    for (int i = 0; i < n; i++) {
+        cin >> name >> norm >> ex >> final;
+        stu[i].init(name, norm, ex, final);
+        stu[i].fun();
     }
-    cin >> searchName;  //输入需要查找的姓名
-    findStudent(stu, n, searchName);  //调用函数，查找学生，输出信息
+    sort(stu, n);
+    for (int i = 0; i < n; i++) {
+        stu[i].print();
+    }
     return 0;
+
 }
