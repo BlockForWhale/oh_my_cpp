@@ -1,123 +1,121 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-class Date {
-private:
-    int year;
-    int month;
-    int day;
+class MyString {
 public:
-    static int maxYear;
-    static int minYear;
+    static int totalCount;
 
-    Date(int y, int m, int d) : year(y), month(m), day(d) {}
-
-    static void SetMaxYear(int maxY) {
-        maxYear = maxY;
-    }
-
-    static void SetMinYear(int minY) {
-        minYear = minY;
-    }
-
-    friend class StudentList;
-
-    friend class Student;
-};
-
-int Date::maxYear = 0;
-int Date::minYear = 0;
-
-class Student {
-private:
-    int num;
-    string name;
-    Date birthday;
-public:
-
-    Student() : num(-1), name(""), birthday(Date(0, 0, 0)) {}
-
-    Student(int nums, string names, Date birthdays) : num(nums), name(names), birthday(birthdays) {
-        if (birthdays.year > Date::maxYear) birthdays.year = Date::maxYear;
-        if (birthdays.year < Date::minYear) birthdays.year = Date::minYear;
-        this->birthday = birthdays;
-    }
-
-    friend class StudentList;
-};
-
-class StudentList {
-private:
-    Student list[100];
-    int count;
-public:
-    StudentList() : count(0) {}
-
-    void AddStudent(Student stu) {
-        list[count++] = stu;
-    }
-
-    void DeleteStudent(int num) {
-        for (int i = 0; i < count; i++) {
-            if (list[i].num == num) {
-                for (int j = i; j < count - 1; j++) {
-                    list[j] = list[j + 1];
-                }
-                count--;
-            }
+    MyString(unsigned n, char c) {
+        totalCount++;
+        s = "";
+        for (int i = 0; i < n; i++) {
+            s = s + c;
         }
     }
 
-    StudentList GetStudent(int year1, int year2) {
-        StudentList ls;
-        for (int i = 0; i < count; i++) {
-            if (list[i].birthday.year >= year1 && list[i].birthday.year <= year2) {
-                ls.AddStudent(list[i]);
-            }
-        }
-        return ls;
+    MyString(char *p) {
+        s = p;
+        totalCount++;
     }
 
-    void Print() {
-        if (count == 0)
-            cout << "No result." << endl;
-        else {
-            for (int i = 0; i < count; i++) {
-                cout << list[i].num << ' ' << list[i].name << ' ' << list[i].birthday.year << ' '
-                     << list[i].birthday.month << ' ' << list[i].birthday.day << endl;
-            }
-        }
+    MyString() {
+        s = "";
+        totalCount++;
     }
+
+    MyString(const MyString &r) {
+        s = r.s;
+        totalCount++;
+    }
+
+    MyString &operator=(MyString r) {
+        s = r.s;
+        return *this;
+    }
+
+    ~MyString() {
+        totalCount--;
+    }
+
+    static int GetCount() {
+        return totalCount;
+    }
+
+    void ShowStr() {
+        cout << s;
+    }
+
+private:
+    string s;
 };
+
+int MyString::totalCount = 0;
+
+void fun1(int n) {
+    //cout << "定义数组前：" << MyString::GetCount() << endl;
+    MyString strArr[n];
+    //cout << "定义数组后：" << MyString::GetCount() << endl;
+    MyString *pStr;
+    cout << strArr[0].GetCount() << endl;
+}
+
+void fun2(int n) {
+    //cout << "定义数组前：" << MyString::GetCount() << endl;
+    MyString *pStr = new MyString[n];
+    //cout << "定义数组后：" << MyString::GetCount() << endl;
+    cout << MyString::GetCount() << endl;
+}
+
+void fun3(MyString &s1, MyString s2) {
+    MyString s3;
+    s3 = s1 = s2;
+    cout << MyString::GetCount() << endl;
+    s3.ShowStr();
+    cout << endl;
+}
 
 int main() {
-    int num, birthYear, birthMonth, birthDay;
-    int maxYear, minYear, year1, year2;
+    //cout << "initial：" << MyString::GetCount() << endl;
+    MyString s1;
+    MyString s2;
+    int n;
+    char charArr[20];
     int op;
-    string name;
-    StudentList sl;
-    Student stu;
-    cin >> maxYear >> minYear;
-    Date::SetMaxYear(maxYear);
-    Date::SetMinYear(minYear);
     while (cin >> op) {
         switch (op) {
-            case 1:
-                cin >> num >> name >> birthYear >> birthMonth >> birthDay;
-                stu = Student(num, name, Date(birthYear, birthMonth, birthDay));
-                sl.AddStudent(stu);
+            case 1: {
+                cin >> n;
+                fun1(n);
                 break;
-            case 2:
-                cin >> num;
-                sl.DeleteStudent(num);
+            }
+            case 2: {
+                cin >> n;
+                fun2(n);
                 break;
-            case 3:
-                cin >> year1 >> year2;
-                StudentList temp = sl.GetStudent(year1, year2);
-                temp.Print();
+            }
+            case 3: {
+                int m;
+                char ch;
+                cin >> m >> ch;
+                s2 = MyString(m, ch);
+                fun3(s1, s2);
+                s1.ShowStr();
+
+                cout << endl;
+
                 break;
+            }
+            case 4: {
+                cin >> charArr;
+                s1 = MyString(charArr);
+                cout << MyString::GetCount() << endl;
+                s1.ShowStr();
+                cout << endl;
+                break;
+            }
         }
     }
+
     return 0;
 }
