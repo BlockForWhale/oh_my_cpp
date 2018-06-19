@@ -2,92 +2,56 @@
 
 using namespace std;
 
-class ID {
+class Point {
 private:
-    char *id;
-    int year, month, date;
-    char sex, youth;
+    int x, y;
 public:
-    void set_ID(char *s) {
-        char *p = (char *) malloc(sizeof(*s) * (strlen(s) + 1));
-        strcpy(p, s);
-        id = p;
-        //cout << "current ID(first): "<<id<<endl;
-        year = 0;
-        month = 0;
-        date = 0;
-        sex = 'F';
-        youth = 'N';
+    Point(int xs, int ys) : x(xs), y(ys) {}
+
+    void move(int dx, int dy) {
+        x += dx;
+        y += dy;
     }
 
-    int getAge() {
-        int age = 2015 - year;
-        int asd = month * 1000 + date;
-        if (asd > 1001) age--;
-        return age;
+    int getX() { return x; }
+
+    int getY() { return y; }
+};
+
+class Rectangle : public Point {
+private:
+    int width;
+    int height;
+public:
+    Rectangle(int x, int y, int widths, int heights) : Point(x, y), width(widths), height(heights) {}
+
+    int getArea() {
+        return width * height;
     }
 
-    void fun() {
-        char *start = id;
-        //cout << "current ID: "<<id<<endl;
-        for (int i = 0; i < 6; i++) id++;
-        //cout << "current ID: "<<id<<endl;
-        year += ((*id - '0') * 1000);
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        year += ((*id - '0') * 100);
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        year += ((*id - '0') * 10);
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        year += (*id - '0');
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        month += (*id - '0') * 10;
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        month += (*id - '0');
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        date += (*id - '0') * 10;
-        id++;
-        //cout << "current ID: "<<id<<endl;
-        date += (*id - '0');
-        id += 3;
-        //cout << "current ID: "<<id<<endl;
-        if ((*id - '0') % 2 != 0) sex = 'M';
-        else sex = 'F';
-        id = start;
-        //cout << "current ID: "<<id<<endl;
-        if (sex == 'M' && getAge() <= 35) youth = 'Y';
-        else if (sex == 'M' && getAge() > 35) youth = 'N';
-        else if (sex == 'F' && getAge() <= 40) youth = 'Y';
-        else youth = 'N';
-    }
-
-    void print() {
-        cout << id << endl;
-        cout << year << '.' << month << '.' << date << endl;
-        cout << sex << endl << youth << endl;
-    }
-
-    ~ID() {
-        free(id);
+    bool isIn(Point p) {
+        return (p.getX() > this->getX() && p.getX() < (this->getX() + width) && p.getY() > this->getY() &&
+                p.getY() < (this->getY() + height));
     }
 };
 
 int main() {
-    int T, i;
-    char id[19];
-    cin >> T;
-    ID person[T];
-    for (i = 0; i < T; i++) {
-        if (i > 0 && i < T) cout << endl;
-        cin >> id;
-        person[i].set_ID(id);
-        person[i].fun();
-        person[i].print();
-    }
+    int topLeftX, topLeftY, width, height;
+    int px, py, dx, dy;
+    cin >> topLeftX >> topLeftY >> width >> height;
+    cin >> px >> py;
+    cin >> dx >> dy;
+    Point p(px, py);
+    Rectangle r(topLeftX, topLeftY, width, height);
+    cout << r.getArea() << endl;
+    if (r.isIn(p))
+        cout << "In" << endl;
+    else
+        cout << "Not in" << endl;
+    r.move(dx, dy);
+    if (r.isIn(p))
+        cout << "In" << endl;
+    else
+        cout << "Not in" << endl;
     return 0;
 }
