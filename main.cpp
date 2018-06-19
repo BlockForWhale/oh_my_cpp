@@ -2,27 +2,25 @@
 
 using namespace std;
 
-void CalScore(string str[], int num) {
-    for (int i = 0; i < num; i++) {
-        int score = 0;
-        int addPlus = 1;
-        for (int j = 0; j < str[i].length(); j++) {
-            if (str[i][j] == 'O') {
-                score += addPlus++;
-            } else {
-                addPlus = 1;
-            }
+bool judge(const string &s, const string &t) {
+    int occur[s.length()];
+    int curPos = 0;
+    for (int i = 0; i < s.length(); i++) occur[i] = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (t.find(s[i], curPos) == -1) return false;
+        else {
+            curPos = t.find(s[i], curPos);
         }
-        cout << score << endl;
     }
+    return true;
 }
 
 int main() {
-    int i, num;
-    cin >> num;
-    string str[num];
-    for (i = 0; i < num; i++)
-        cin >> str[i];
-    CalScore(str, num);  //要求自行设计
+    string s, t;
+    int len_s, len_t;
+    while (cin >> s >> t) {
+        if (judge(s, t)) cout << 1 << endl;
+        else cout << 0 << endl;
+    }
     return 0;
 }
