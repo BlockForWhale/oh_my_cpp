@@ -2,25 +2,49 @@
 
 using namespace std;
 
-bool judge(const string &s, const string &t) {
-    int occur[s.length()];
-    int curPos = 0;
-    for (int i = 0; i < s.length(); i++) occur[i] = 0;
-    for (int i = 0; i < s.length(); i++) {
-        if (t.find(s[i], curPos) == -1) return false;
-        else {
-            curPos = t.find(s[i], curPos);
+class Student {
+public:
+    void Set_StuNum(int x) {
+        stu_num = x;
+    } //自行设计
+
+    int Get_StudNum() {
+        return stu_num;
+    }  //自行设计
+
+    void Set_Score(float x) {
+        score = x;
+    } //自行设计
+
+    float Get_Score() {
+        return score;
+    }  //自行设计
+private:
+    int stu_num; //学号
+    float score; //分数
+};
+
+void max(Student *list, int count, int &max_num, float &max_score) {
+    max_score = -2147483647;
+    for (int i = 0; i < count; i++) {
+        if (list[i].Get_Score() > max_score) {
+            max_num = list[i].Get_StudNum();
+            max_score = list[i].Get_Score();
         }
     }
-    return true;
 }
 
 int main() {
-    string s, t;
-    int len_s, len_t;
-    while (cin >> s >> t) {
-        if (judge(s, t)) cout << 1 << endl;
-        else cout << 0 << endl;
+    int n, stu_num, max_stu_num;
+    float score, max_score;
+    cin >> n;
+    Student stu[n];
+    for (int i = 0; i < n; i++) {
+        cin >> stu_num >> score;
+        stu[i].Set_StuNum(stu_num);
+        stu[i].Set_Score(score);
     }
+    max(stu, n, max_stu_num, max_score);
+    cout << max_stu_num << " " << max_score;
     return 0;
 }
