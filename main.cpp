@@ -2,45 +2,19 @@
 
 using namespace std;
 
-class Student {
-public:
-    void Set_StuNum(int); //自行设计
-    int Get_StudNum();  //自行设计
-    void Set_Score(float); //自行设计
-    float Get_Score();  //自行设计
-    friend void Score_Trans(Student &s);
-
-private:
-    int stu_num; //学号
-    float score; //分数
-};
-
-void Student::Set_StuNum(int x) { stu_num = x; }
-
-int Student::Get_StudNum() { return stu_num; }
-
-void Student::Set_Score(float x) { score = x; }
-
-float Student::Get_Score() { return score; }
-
-void Score_Trans(Student &s) {
-    cout << s.stu_num << ' ';
-    cout << (s.score >= 90 ? "优" : (s.score >= 80 ? "良" : (s.score >= 70 ? "中" : (s.score >= 60 ? "及格" : "不及格"))));
+template<class T>
+T distance(T x1, T y1, T x2, T y2) {
+    T dis;
+    dis = sqrt((double) (pow(x1 - x2, 2) + pow(y1 - y2, 2)));
+    return dis;
 }
 
 int main() {
-    int n, i, stu_num, max_stu_num;
-    float score, max_score;
-    cin >> n;
-    Student stu[n];
-    for (i = 0; i < n; i++) {
-        cin >> stu_num >> score;
-        stu[i].Set_StuNum(stu_num);
-        stu[i].Set_Score(score);
-    }
-    for (i = 0; i < n; i++) {
-        Score_Trans(stu[i]);
-        if (i < n - 1) cout << endl;
-    }
+    int i_x1, i_y1, i_x2, i_y2;
+    double d_x1, d_y1, d_x2, d_y2;
+    cin >> i_x1 >> i_y1 >> i_x2 >> i_y2;
+    cin >> d_x1 >> d_y1 >> d_x2 >> d_y2;
+    cout << distance(i_x1, i_y1, i_x2, i_y2) << endl;
+    cout << distance(d_x1, d_y1, d_x2, d_y2) << endl;
     return 0;
 }
