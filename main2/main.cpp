@@ -2,42 +2,97 @@
 
 using namespace std;
 
-class Object {
+class Complex {
 private:
-    int num;
-    int count;
-    double price;
+    double xu;
+    double shi;
 public:
-    static int discount, n;
-    static double sum, averages;
+    Complex(double shis = 0, double xus = 0) : shi(shis), xu(xus) {}
 
-    void average() {
-        averages = sum / (double) n;
+    friend Complex &operator+(Complex &self, Complex &r) {
+        double shibu, xubu;
+        shibu = self.shi + r.shi;
+        xubu = self.xu + r.xu;
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
     }
 
-    void cal() {
-        sum += price;
-        n += count;
-        average();
+    friend Complex &operator+(Complex &self, int a) {
+        double shibu, xubu;
+        shibu = self.shi + a;
+        xubu = self.xu;
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
     }
 
-    void input() {
-        cin >> num >> count >> price;
-        cal();
+    friend Complex &operator+(int a, Complex &self) {
+        double shibu, xubu;
+        shibu = self.shi + a;
+        xubu = self.xu;
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
+    }
+
+    friend Complex &operator-(Complex &self, Complex r) {
+        double shibu, xubu;
+        shibu = self.shi - r.shi;
+        xubu = self.xu - r.xu;
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
+    }
+
+    friend Complex &operator*(Complex &self, Complex r) {
+        double shibu = 0, xubu = 0;
+        shibu += self.shi * r.shi;
+        xubu += self.shi * r.xu;
+        xubu += self.xu * r.shi;
+        shibu += self.xu * r.xu;
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
+    }
+
+    friend Complex &operator/(Complex &self, Complex r) {
+        double shibu, xubu;
+        shibu = self.shi * r.shi + self.xu * r.xu;
+        shibu = shibu / (r.shi * r.shi + r.xu * r.xu);
+        xubu = self.xu * r.shi - self.shi * r.xu;
+        xubu = xubu / (r.shi * r.shi + r.xu * r.xu);
+        Complex *s = (Complex *) malloc(sizeof(Complex));
+        *s = Complex(shibu, xubu);
+        return *s;
+    }
+
+    string toString() {
+        string s;
+        if (shi == 0 && xu == 0) {
+            s = "0";
+        } else if (shi != 0 && xu == 0) {
+            s = to_string(shi);
+        } else if (shi == 0 && xu != 0) {
+            s = to_string(xu) + "i";
+        } else {
+            if (xu > 0)
+                s = to_string(shi) + "+" + to_string(xu) + "i";
+            else
+                s = to_string(shi) + to_string(xu) + "i";
+        }
+        return s;
     }
 };
 
-int Object::discount = 1;
-double Object::sum = 0;
-int Object::n = 0;
-double Object::averages = 0;
-
 int main() {
-    Object human[3];
-    for (int i = 0; i < 3; i++) {
-        human[i].input();
-    }
-    cout << "平均售价：" << Object::averages << endl;
-    cout << "总售款：" << Object::n << endl;
+    Complex a = Complex(2, 3);
+    Complex b = Complex(5, -4.5);
+    cout << (a + 3).toString() << endl;
+    cout << (a + b).toString() << endl;
+    cout << (4 + a).toString() << endl;
+    cout << (a - b).toString() << endl;
+    cout << (a * b).toString() << endl;
+    cout << (a / b).toString() << endl;
     return 0;
 }

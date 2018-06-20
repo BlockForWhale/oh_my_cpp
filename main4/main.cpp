@@ -2,37 +2,53 @@
 
 using namespace std;
 
-template<class numtype>                //定义类模板
-class Compare {
-public:
-    Compare(numtype a, numtype b);
+class Teacher;
 
-    numtype max();
-
-    numtype min();
-
+class Student {
 private:
-    numtype x, y;
+    int num;
+    string name;
+    char sex;
+public:
+    Student(int nums, string names, char sexs) : num(nums), name(names), sex(sexs) {}
+
+    int getNum() { return num; }
+
+    string getName() { return name; }
+
+    char getSex() { return sex; }
 };
 
-template<class numtype>
-Compare::Compare(numtype a, numtype b) { x = a, y = b; }
+class Teacher {
+private:
+    int num;
+    string name;
+    char sex;
+public:
 
-template<class numtype>
-numtype Compare::max() { return (x > y) ? x : y; }
+    Teacher() {}
 
-template<class numtype>
-numtype Compare::min() { return (x < y) ? x : y; }
+    Teacher(int nums, string names, char sexs) : num(nums), name(names), sex(sexs) {}
+
+    Teacher &operator=(Student &x) {
+        num = x.getNum();
+        name = x.getName();
+        sex = x.getSex();
+        return *this;
+    }
+
+    int getNum() { return num; }
+
+    string getName() { return name; }
+
+    char getSex() { return sex; }
+};
 
 int main() {
-    Compare<int> cmp1(3, 7);            //定义对象cmp1，用于两个整数的比较
-    cout << cmp1.max() << "is the Maximum of two integer numbers." << endl;
-    cout << cmp1.min() << "is the Minimum of two integer numbers. " << endl << endl;
-    Compare<float> cmp2(45.78, 93.6);   //定义对象cmp2，用于两个浮点数的比较
-    cout << cmp2.max() << "is the Maximum of two float numbers. " << endl;
-    cout << cmp2.min() << "is the Minimum of two float numbers. " << endl << endl;
-    Compare<char> cmp3('a', 'A');       //定义对象cmp3，用于两个字符的比较
-    cout << cmp3.max() << "is the Maximum of two characters. " << endl;
-    cout << cmp3.min() << "is the Minimum of two characters. " << endl;
+    Student a = Student(101, "Jerry", 'M');
+    Student b = Student(102, "LL", 'F');
+    Teacher c;
+    c = b;
+    cout << c.getNum() << " " << c.getName() << " " << c.getSex() << endl;
     return 0;
 }
