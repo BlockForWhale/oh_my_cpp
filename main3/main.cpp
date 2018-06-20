@@ -2,51 +2,56 @@
 
 using namespace std;
 
-class Student {
+class Shape {
 public:
-    void display();
-
-    Student(int nums, string names, char sexs) : num(nums), name(names), sex(sexs) {}
-
-protected :
-    int num;
-    string name;
-    char sex;
+    virtual void printArea();
 };
 
-void Student::display() {
-    cout << "num:" << num << endl;
-    cout << "name:" << name << endl;
-    cout << "sex: " << sex << endl;
+void Shape::printArea() {
+
 }
 
-class Student1 : public Student {
-public:
-    void display1();
-
-    Student1(int nums = 0, string names = "undefined", char sexs = 'M', int ages = 1, string addrs = "12#")
-            : Student(nums, names, sexs), age(ages), addr(addrs) {}
-
-    void setNum(int num) {
-        this->num = num;
-    }
-
+class Circle : public Shape {
 private:
-    int age;
-    string addr;
+    int radius;
+public:
+    Circle(int radiuss) : radius(radiuss) {}
+
+    void printArea() {
+        cout << (3.14159 * radius * radius) << endl;
+    }
 };
 
-void Student1::display1() {
-    cout << "num: " << num << endl;
-    cout << "name: " << name << endl;
-    cout << "sex: " << sex << endl;
-    cout << "age: " << age << endl;
-    cout << "address: " << addr << endl;
-}
+class Rectangle : public Shape {
+private:
+    int x;
+    int y;
+public:
+    Rectangle(int xs, int ys) : x(xs), y(ys) {}
+
+    void printArea() {
+        cout << (x * y) << endl;
+    }
+};
+
+class Triangle : public Shape {
+private:
+    int bottom;
+    int height;
+public:
+    Triangle(int bot, int hei) : bottom(bot), height(hei) {}
+
+    void printArea() {
+        cout << (bottom * height) << endl;
+    }
+};
 
 int main() {
-    Student1 stud1;
-    stud1.display1();
-    stud1.setNum(10023);
+    Triangle t = Triangle(3, 4);
+    Rectangle r = Rectangle(3, 5);
+    Circle c = Circle(2);
+    t.printArea();
+    r.printArea();
+    c.printArea();
     return 0;
 }
