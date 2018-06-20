@@ -2,47 +2,51 @@
 
 using namespace std;
 
-class Matrix {
-private:
-    int ls[2][3];
-    int sizeX, sizeY;
+class Student {
 public:
-    Matrix(int lsx[2][3]) {
-        for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 3; j++)
-                ls[i][j] = lsx[i][j];
-    }
+    void display();
 
-    void print() {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                cout << ls[i][j] << (j == 2 ? "\n" : " ");
-            }
-        }
-    }
+    Student(int nums, string names, char sexs) : num(nums), name(names), sex(sexs) {}
 
-    friend Matrix &operator+(Matrix &a, Matrix &b) {
-        Matrix *p = (Matrix *) malloc(sizeof(Matrix));
-        *p = a;
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                (*p).ls[i][j] += b.ls[i][j];
-            }
-        }
-        return *p;
-    }
+protected :
+    int num;
+    string name;
+    char sex;
 };
 
+void Student::display() {
+    cout << "num:" << num << endl;
+    cout << "name:" << name << endl;
+    cout << "sex: " << sex << endl;
+}
+
+class Student1 : public Student {
+public:
+    void display1();
+
+    Student1(int nums = 0, string names = "undefined", char sexs = 'M', int ages = 1, string addrs = "12#")
+            : Student(nums, names, sexs), age(ages), addr(addrs) {}
+
+    void setNum(int num) {
+        this->num = num;
+    }
+
+private:
+    int age;
+    string addr;
+};
+
+void Student1::display1() {
+    cout << "num: " << num << endl;
+    cout << "name: " << name << endl;
+    cout << "sex: " << sex << endl;
+    cout << "age: " << age << endl;
+    cout << "address: " << addr << endl;
+}
+
 int main() {
-    int p[2][3] = {
-            1, 2, 3, 5, 6, 7
-    };
-    int p2[2][3] = {
-            2, 3, 4, 5, 6, -2
-    };
-    Matrix a = Matrix(p);
-    Matrix b = Matrix(p2);
-    Matrix c = a + b;
-    c.print();
+    Student1 stud1;
+    stud1.display1();
+    stud1.setNum(10023);
     return 0;
 }
