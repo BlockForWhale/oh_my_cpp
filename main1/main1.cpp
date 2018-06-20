@@ -2,24 +2,30 @@
 
 using namespace std;
 
-class Time {
-private:
-    int hour;
-    int minute;
-    int sec;
+class Student {
 public:
-    void input() {
-        cin >> hour >> minute >> sec;
+    Student(int n, float s) : num(n), score(s) {}
+
+    void change(int n, float s) {
+        num = n;
+        score = s;
     }
 
-    void output() {
-        cout << hour << ':' << minute << ':' << sec << endl;
-    }
+    void display() { cout << num << " " << score << endl; }
+
+private:
+    int num;
+    float score;
 };
 
+void fun(Student &stud) {
+    stud.display();
+    stud.change(101, 80.5);
+    stud.display();
+}
+
 int main() {
-    Time t1;
-    t1.input();
-    t1.output();
+    Student stud(101, 78.5);
+    fun(stud);
     return 0;
 }
