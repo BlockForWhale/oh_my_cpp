@@ -3,5 +3,5 @@ project(cpp_class)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main3/main.cpp)
+set(SOURCE_FILES main1/main.cpp)
 add_executable(cpp_class ${SOURCE_FILES})
