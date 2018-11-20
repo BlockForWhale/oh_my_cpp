@@ -2,11 +2,13 @@
 
 using namespace std;
 
+#define INT32_MAX 2147483647
+
 template<class ElemType>
 class SqList {
 private:
     ElemType *elem;   // 存储空间基址
-    int length = 0;               // 当前长度
+    int length;               // 当前长度
     int listsize;        // 允许的最大存储容量(以sizeof(ElemType)为单位
 public:
     SqList(int maxsize = 20);
@@ -19,6 +21,8 @@ public:
 
     ElemType getElem(int i) const;
 
+    bool setElem(int i, ElemType e);
+
     //返回顺序表的长度
     int getLength() const { return length; }
 
@@ -26,6 +30,9 @@ public:
 
     //在顺序表的第pos个位置之前插入e元素
     bool ListInsert(int pos, ElemType e);
+
+    //删除顺序表的第pos个位置的元素
+    bool ListDelete(int pos);
 
     //遍历顺序表
     int ListTraverse() const;
@@ -37,11 +44,26 @@ ElemType SqList<ElemType>::getElem(int i) const {
 }
 
 template<class ElemType>
+bool SqList<ElemType>::setElem(int i, ElemType e) {
+    elem[i] = e;
+    return true;
+}
+
+template<class ElemType>
 bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
     //cout << "Inserting " << s << " into pos:" << pos << ", len=" << length << endl;
     for (int i = length - 1; i >= pos - 1; i--) elem[i + 1] = elem[i];
     elem[pos - 1] = s;
     length += 1;
+    return true;
+}
+
+template<class ElemType>
+bool SqList<ElemType>::ListDelete(int pos) {
+    for (int i = pos; i < length - 1; i++) {
+        elem[i] = elem[i + 1];
+    }
+    length--;
     return true;
 }
 
@@ -70,15 +92,21 @@ int SqList<ElemType>::ListTraverse() const {
 }
 
 template<class ElemType>
-int listCompare(SqList<ElemType> &a, SqList<ElemType> &b) {
-    int min_len = a.getLength() > b.getLength() ? b.getLength() : a.getLength();
-    for (int i = 0; i < min_len; ++i) {
-        if (a.getElem(i) > b.getElem(i)) return 1;
-        else if (a.getElem(i) < b.getElem(i)) return -1;
-        else continue;
+void Purge_Sq(SqList<ElemType> &list) {
+    for (int i = 0; i < list.getLength() - 1; i++) {
+        for (int j = i + 1; j < list.getLength(); j++) {
+            if (list.getElem(i) == list.getElem(j) && list.getElem(i) != INT32_MAX) {
+                list.setElem(j, INT32_MAX);
+            }
+        }
     }
-    return 0;
+    int i = 0;
+    while (i < list.getLength()) {
+        if (list.getElem(i) == INT32_MAX) list.ListDelete(i);
+        else i++;
+    }
 }
+
 
 int main() {
     int len1, len2;
@@ -89,12 +117,7 @@ int main() {
     list_1.ListClear();
     createList(list_1, len1, obj1);
     list_1.ListTraverse();
-    cin >> len2;
-    int obj2[len2];
-    for (int i = 0; i < len2; i++) cin >> obj2[i];
-    list_2.ListClear();
-    createList(list_2, len2, obj2);
-    list_2.ListTraverse();
-    cout << listCompare(list_1, list_2) << endl;
+    Purge_Sq(list_1);
+    list_1.ListTraverse();
     return 0;
 }
