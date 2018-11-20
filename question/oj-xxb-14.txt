@@ -1,0 +1,158 @@
+目的：使用C++模板设计单链表的抽象数据类型（ADT）。并在此基础上，稍加改动，针对一元多项式建立相应的稀疏多项式ADT，使用单链表ADT的基本操作，设计并实现稀疏一元多项式的加法计算的算法设计。
+
+内容：（1）请参照单链表的ADT模板，设计稀疏一元多项式的抽象数据类型。（由于该环境目前仅支持单文件的编译，故将所有内容都集中在一个源文件内。在实际的设计中，推荐将抽象类及对应的派生类分别放在单独的头文件中。参考网盘中的单链表ADT原型文件，自行设计稀疏一元多项式的ADT。）
+
+
+
+（2）ADT的简单应用：使用该ADT设计并实现稀疏一元多项式的加法计算的算法设计。
+
+
+
+应用1：假设2个稀疏一元多项式分别由带头结点的有序单链表A和B存储（指数项递增有序）。现要求设计一个算法，实现稀疏一元多项式的加减法计算。要求使用A和B的原存储空间，且计算后B不再单独存在。输入中的单链表的长度不得在计算算法中利用，仅作为建表使用。
+
+注意：加/减法计算后，如某一项的结果系数为0，则该项要从多项式链表中删除。
+
+参考函数原型：
+
+template<class ElemType1，class ElemType2>
+
+void Add_Poly( poly_LinkList<ElemType> &A, poly_LinkList<ElemType> &B, int add_sub );
+
+
+
+有序链表模板类原型（用于一元多项式计算）参考如下：
+
+/* 单链表的结点定义 */（用于一元多项式计算）
+
+template<class ElemType1, class ElemType2>
+struct LinkNode
+{
+    ElemType1 factor; //系数
+    ElemType2 indice;  //指数
+    LinkNode<ElemType1, ElemType2> *next;
+    LinkNode(LinkNode<ElemType1, ElemType2> *ptr = NULL){next = ptr;} //构造函数1，用于构造头结点
+    LinkNode(const ElemType1 &item1, const ElemType1 &item2, LinkNode<ElemType1, ElemType2> *ptr = NULL) //构造函数2，用于构造其他结点
+    //函数参数表中的形参允许有默认值，但是带默认值的参数需要放后面
+    {
+        next = ptr;
+        factor = item1;
+        indice = item2;
+    }
+    ElemType1 getFactor(){ return factor;}  //取得结点中的系数
+    ElemType2 getIndice(){ return indice;}  //取得结点中的指数
+    void SetLink( LinkNode<ElemType1, ElemType2> *link ){ next = link; }  //修改结点的next域
+    void SetFactor( ElemType1 value ){ factor = value; }   //修改结点的系数
+    void SetIndice( ElemType2 value ){ indice = value; }   //修改结点的指数
+};
+
+//带头结点的单链表（用于一元多项式计算）
+template<class ElemType1, class ElemType2>
+class poly_LinkList{
+   private:
+      LinkNode<ElemType1, ElemType2> *head;   // 头结点
+      LinkNode<ElemType1, ElemType2> *tail;   // 尾结点
+   public:
+      //无参数的构造函数
+      poly_LinkList(){head = new LinkNode<ElemType1, ElemType2>;}
+      //带参数的构造函数
+      poly_LinkList(const ElemType1 &item1, const ElemType2 &item2 ){head = new LinkNode<ElemType1, ElemType2>(item1, item2);}
+      //拷贝构造函数
+      poly_LinkList(poly_LinkList<ElemType1, ElemType2> &List);
+      //析构函数
+      ~poly_LinkList(){ListDestroy();}
+      //销毁链表
+      void ListDestroy();
+      //清空链表
+      void ListClear();
+      //返回链表的长度
+      int ListLength() const;
+      //判断链表是否为空表
+      bool ListEmpty() const;
+      //在首节点之前插入一个结点
+      bool InsFirst( ElemType1 fact, ElemType2 indi );
+      //获取链表头结点
+      LinkNode<ElemType1,ElemType2>* GetHead() { return head;}
+      //设置链表头结点
+      void SetHead(LinkNode<ElemType1,ElemType2> *p){ head = p;}
+      //获取链表尾结点
+      LinkNode<ElemType1,ElemType2>* GetTail() { return tail;}
+      //返回链表的第i个元素的系数值
+      ElemType1 GetElem_factor(int pos);
+      //返回链表的第i个元素的指数值
+      ElemType2 GetElem_indice(int pos);
+      //在链表的第pos个位置之前插入e元素
+      bool ListInsert_prior(int pos, ElemType1 fact, ElemType2 indi);
+      //在链表的第pos个位置之后插入e元素
+      bool ListInsert_next(int pos, ElemType1 fact, ElemType2 indi);
+      //表头插入法动态生成链表
+      void CreateList_Head(int n, ElemType1 *fact, ElemType2 *indi);
+      //表尾插入法动态生成链表
+      void CreateList_Tail(int n, ElemType1 *fact, ElemType2 *indi);
+      //删除链表的第pos个位置的元素
+      ElemType2 ListDelete(int pos);
+      //按序号查找，从链表的第一个结点开始，判断当前结点是否是第i个，
+      //若是，则返回该结点的数据域的值；否则继续后一个，直至表结束。没有第i个结点时返回空。
+      bool FindElem( int k, ElemType1 &fact, ElemType2 &indi);
+      //bool compare(ElemType a, ElemType *b);
+      //按值查找，即定位。从链表的第一个结点开始，判断当前结点值是否等于e。
+      //若是，则返回该结点的序号；否则继续后一个，直至表结束。找不到时返回0。
+      int SearchElem( const ElemType2 &e) const;
+      //返回链表给定数据元素的后继数据元素的值
+      bool NextElem(LinkNode<ElemType1, ElemType2> *p, ElemType1 &fact, ElemType2 &indi);
+      //遍历链表
+      bool ListTraverse() const;
+};
+
+
+
+输入说明 :
+
+第一行：加/减法选择（0：加法  1：减法）
+
+第二行：一元多项式A的项数
+
+第三行：一元多项式A的各项的系数（系数之间以空格分隔）
+
+第四行：一元多项式A的各项的指数（指数之间以空格分隔）
+
+第五行：一元多项式B的项数
+
+第六行：一元多项式B的各项的系数（系数之间以空格分隔）
+
+第七行：一元多项式B的各项的指数（指数之间以空格分隔）
+
+
+
+输出说明 :
+
+第一行：多项式A的第一项的系数、指数（以空格分隔）
+
+第一行：多项式A的第二项的系数、指数（以空格分隔）
+
+...
+
+第n行：多项式A的第n项的系数、指数（以空格分隔） （假设多项式A的项数为n）
+
+
+
+第一行：多项式B的第一项的系数、指数（以空格分隔）
+
+第一行：多项式B的第二项的系数、指数（以空格分隔）
+
+...
+
+第m行：多项式B的第m项的系数、指数（以空格分隔） （假设多项式B的项数为m）
+
+
+
+第一行：加/减法计算后，结果多项式A的第一项的系数、指数（以空格分隔）
+
+第一行：加/减法计算后，结果多项式A的第二项的系数、指数（以空格分隔）
+
+...
+
+第p行：加/减法计算后，结果多项式A的第n项的系数、指数（以空格分隔） （假设结果多项式的项数为p）
+
+
+
+（输入与输出之间以空行分隔，多项式之间以空行分割）
