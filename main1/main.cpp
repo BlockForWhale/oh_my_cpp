@@ -2,140 +2,100 @@
 
 using namespace std;
 
-#define INT32_MAX 2147483647
+#define tmp template<class ElemType>
+#define Node LinkNode<ElemType>
 
-template<class ElemType>
-class SqList {
-private:
-    ElemType *elem;   // 存储空间基址
-    int length;               // 当前长度
-    int listsize;        // 允许的最大存储容量(以sizeof(ElemType)为单位
-public:
-    SqList(int maxsize = 20);
+tmp
+struct LinkNode {
+    ElemType data;
+    Node *next;
 
-    //删除顺序表
-    ~SqList() { delete[] elem; }
+    LinkNode(Node *ptr = NULL) { next = ptr; }
 
-    //将顺序表置为空表
-    void ListClear() { length = 0; }
-
-    ElemType getElem(int i) const;
-
-    bool setElem(int i, ElemType e);
-
-    //返回顺序表的长度
-    int getLength() const { return length; }
-
-    void setLength(int len) { length = len; }
-
-    //在顺序表的第pos个位置之前插入e元素
-    bool ListInsert(int pos, ElemType e);
-
-    //删除顺序表的第pos个位置的元素
-    bool ListDelete(int pos);
-
-    //遍历顺序表
-    int ListTraverse() const;
+    LinkNode(const ElemType &item, Node *ptr = NULL) {
+        next = ptr;
+        data = item;
+    }
 };
 
-template<class ElemType>
-ElemType SqList<ElemType>::getElem(int i) const {
-    return elem[i];
-}
+//带头结点的单链表
+tmp
+class LinkList {
+private:
+    Node *head;
+public:
+    //无参数的构造函数
+    LinkList() { head = new Node; }
 
-template<class ElemType>
-bool SqList<ElemType>::setElem(int i, ElemType e) {
-    elem[i] = e;
-    return true;
-}
+    //带参数的构造函数
+    LinkList(const ElemType &item) { head = new Node(item); }
 
-template<class ElemType>
-bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
-    //cout << "Inserting " << s << " into pos:" << pos << ", len=" << length << endl;
-    for (int i = length - 1; i >= pos - 1; i--) elem[i + 1] = elem[i];
-    elem[pos - 1] = s;
-    length += 1;
-    return true;
-}
+    //获取链表头结点
+    Node *GetHead() const { return head; }
 
-template<class ElemType>
-bool SqList<ElemType>::ListDelete(int pos) {
-    for (int i = pos; i < length - 1; i++) {
-        elem[i] = elem[i + 1];
+    void CreateList_Head(int n, ElemType *m);
+
+    bool ListTraverse() const;
+};
+
+tmp
+void LinkList<ElemType>::CreateList_Head(int n, ElemType *m) {
+    Node *p;
+    for (int i = n; i > 0; i--) {
+        p = new Node;
+        p->data = m[i - 1];
+        p->next = head->next;
+        head->next = p;
     }
-    length--;
-    return true;
 }
 
-template<class ElemType>
-SqList<ElemType>::SqList(int ms) {
-    if (ms == 0) ms = 10;
-    elem = new ElemType[ms];
-    listsize = ms;
-    length = 0;
-}
-
-template<class ElemType>
-void createList(SqList<ElemType> &list, int len, ElemType data[]) {
-    //cout << "Creating list..." << "len is " << len << endl;
-    for (int i = 0; i < len; i++) list.ListInsert(i + 1, data[i]);
-}
-
-template<class ElemType>
-int SqList<ElemType>::ListTraverse() const {
-    //cout << "Current len :" << length << endl;
-    for (int i = 0; i < length; i++) {
-        cout << *(elem + i) << " ";
+tmp
+bool LinkList<ElemType>::ListTraverse() const {
+    Node *next_node;
+    next_node = head->next;
+    while (next_node) {
+        cout << next_node->data << " ";
+        next_node = next_node->next;
     }
     cout << endl;
-    return 1;
+    return true;
 }
 
-template<class ElemType>
-void Purge_Sq_OL(SqList<ElemType> &list) {
-    for (int i = 0; i < list.getLength() - 1; i++) {
-        for (int j = i + 1; j < list.getLength(); j++) {
-            if (list.getElem(i) == list.getElem(j) && list.getElem(i) != INT32_MAX) {
-                list.setElem(j, INT32_MAX);
-            }
+tmp
+void Exchange_L(LinkList<ElemType> &list, int m) {
+    Node *head_node;
+    Node *point, *real_next, *q;
+    int k = 1;
+    head_node = list.GetHead();
+    if (head_node->next != NULL && m != 0) {
+        point = head_node->next;
+        while (point != NULL && k < m) { // 查找am所在结点
+            point = point->next;
+            k++;
         }
-    }
-    int i = 0;
-    while (i < list.getLength()) {
-        if (list.getElem(i) == INT32_MAX) list.ListDelete(i);
-        else i++;
-    }
-}
-
-template<class ElemType>
-void Intersect_Sq_OL_C(const SqList<ElemType> &A, const SqList<ElemType> &B, SqList<ElemType> &C) {
-    int i = 0, j = 0, k = 0;
-    while (i < A.getLength() || j < B.getLength()) {
-        if (A.getElem(i) < B.getElem(j))
-            i++;
-        else if (A.getElem(i) > B.getElem(j))
-            j++;
-        else if (A.getElem(i) == B.getElem(j))
-            k++, C.ListInsert(k, A.getElem(i)), i++, j++;
+        if (point && point->next) {
+            real_next = head_node->next;
+            head_node->next = point->next;
+            point->next = NULL;
+            q = head_node->next;
+            while (q->next)
+                q = q->next;
+            q->next = real_next;
+        }
     }
 }
 
 int main() {
-    int len1, len2;
-    SqList<int> list_1, list_2, list_3;
-    cin >> len1;
-    int obj1[len1];
-    for (int i = 0; i < len1; i++) cin >> obj1[i];
-    list_1.ListClear();
-    createList(list_1, len1, obj1);
-    list_1.ListTraverse();
-    cin >> len2;
-    int obj2[len2];
-    for (int i = 0; i < len2; i++) cin >> obj2[i];
-    list_2.ListClear();
-    createList(list_2, len2, obj2);
-    list_2.ListTraverse();
-    Intersect_Sq_OL_C(list_1, list_2, list_3);
-    list_3.ListTraverse();
+    int i, n;
+    LinkList<int> node_list;
+    cin >> n;//length
+    int array_list[n];
+    for (i = 0; i < n; i++) cin >> array_list[i];
+    node_list.CreateList_Head(n, array_list);
+    node_list.ListTraverse();
+    int asd;
+    cin >> asd;
+    Exchange_L(node_list, asd);
+    node_list.ListTraverse();
     return 0;
 }
