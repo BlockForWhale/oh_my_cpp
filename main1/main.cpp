@@ -56,7 +56,6 @@ public:
 };
 
 
-
 tmpl
 LinkQueue<ElemType>::LinkQueue() {
     rear = new QNode;
@@ -103,55 +102,37 @@ bool LinkQueue<ElemType>::enQueue(ElemType e) {
 }
 
 tmpl
-void queuetraining(LinkQueue<ElemType> &lq, int im) {
-    int num;
-    int la, mine1;
-    int n;
-    while (im--) {
-        cin >> n;
-        la = n;
-        mine1 = n;
-        if (n <= 3) {
-            if (n == 1)
-                cout << "1";
-            if (n == 2)
-                cout << "1,2";
-            if (n == 3)
-                cout << "1,2,3";
-        } else {
-            for (int i = 1; i <= n; i++) lq.enQueue(i);
-            while (la > 3) {
-                for (int i = 1; i <= la; i++) {
-                    lq.deQueue(num);
-                    if (i % 2 == 1) {
-                        lq.enQueue(num);
-                    } else --mine1;
-                }
-                la = mine1;
-                if (la > 3) {
-                    for (int i = 1; i <= la; i++) {
-                        lq.deQueue(num);
-                        if (i % 3 != 0) {
-                            lq.enQueue(num);
-                        } else mine1--;
-                    }
-                    la = mine1;
-                }
-            }
-            while (!lq.QueueisEmpty()) {
-                lq.deQueue(num);
-                if (!lq.QueueisEmpty()) cout << num << ",";
-                else cout << num;
-            }
-            if (im > 0) cout << endl;
-        }
+bool LinkQueue<ElemType>::QueueTraverse() const {
+    QNode *v;
+    v = front->next;
+    while (v) {
+        cout << v->data << ' ';
+        v = v->next;
     }
+    return true;
+}
+
+tmpl
+void queuetraining(LinkQueue<ElemType> &linkQueue, int i1, int i2) {
+    int minecraft, tmp1, num;
+    minecraft = i1;
+    tmp1 = 0;
+    for (int i = 1; i <= i1; i++) linkQueue.enQueue(i);
+    while (minecraft > 1) {
+        tmp1++;
+        linkQueue.deQueue(num);
+        if (tmp1 == i2) {
+            tmp1 = 0;
+            minecraft--;
+        } else linkQueue.enQueue(num);
+    }
+    linkQueue.QueueTraverse();
 }
 
 int main() {
     LinkQueue<int> mine;
-    int num;
-    cin >> num;
-    queuetraining(mine, num);
+    int num, c;
+    cin >> num >> c;
+    queuetraining(mine, num, c);
     return 0;
 }
