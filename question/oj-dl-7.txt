@@ -1,0 +1,59 @@
+目的：使用C++模板设计链队列的抽象数据类型（ADT）。并在此基础上，使用链队列ADT的基本操作，设计并实现简单应用的算法设计。
+
+内容：（1）请参照单链表的ADT模板，设计链队列的抽象数据类型。（由于该环境目前仅支持单文件的编译，故将所有内容都集中在一个源文件内。在实际的设计中，推荐将抽象类及对应的派生类分别放在单独的头文件中。参考教材、课件，以及网盘中的单链表ADT原型文件，自行设计链队列的ADT。）
+
+注意：链队列带头结点。
+
+
+
+（2）ADT的简单应用：使用该ADT设计并实现应用链队列的算法设计。
+
+
+
+应用：假设2个任意长度的整数x、y分别由带头结点的链队列A和B存储，现要求设计一个算法，实现任意长的整数进行加法运算。
+
+参考函数原型：
+
+template<class ElemType>
+
+void Long_Int_Add( LinkQueue<ElemType> &A, LinkQueue<ElemType> &B, string &result, string &A_str, string &B_str ); //result 计算结果字符串
+
+
+
+辅助函数原型：
+
+（1）从长整数的低位开始拆分（4位为一组，即不超过9999的非负整数），依次入队到链队列中；头结点的数据域存放正负数标志（正数或0：1，负数：-1）。
+
+template<class ElemType>
+
+void Input_Int_Division( LinkQueue<ElemType> &A, string &str );
+
+（2）计算结果中间位格式控制
+
+string Int_String( int result );
+
+（3）两个长整数的绝对值大小比较（x>y 返回值为1；x<y 返回值为2；x=y 返回值为0；）
+
+template<class ElemType>
+
+int Two_LongNum_Compare( string &A_str, string &B_str );
+
+
+
+输入说明 :
+
+第一行：长整数x
+
+第二行：长整数y
+
+
+
+输出说明 :
+
+第一行：格式化后的长整数x（从低位到高位每4位用‘,’分开）
+
+第二行：格式化后的长整数y（从低位到高位每4位用‘,’分开）
+
+第三行：空行
+
+第四行：格式化后的计算结果（从低位到高位每4位用‘,’分开）
