@@ -1,0 +1,101 @@
+目的：使用C++模板设计循环链表的抽象数据类型（ADT）。并在此基础上，使用循环链表ADT的基本操作，设计并实现单链表的简单算法设计。
+
+内容：（1）请使用模板设计循环链表的抽象数据类型。（由于该环境目前仅支持单文件的编译，故将所有内容都集中在一个源文件内。在实际的设计中，推荐将抽象类及对应的派生类分别放在单独的头文件中。参考网盘中的单链表ADT原型文件，自行设计循环链表的ADT。）
+
+
+
+（2）ADT的简单应用：使用该ADT设计并实现循环链表应用场合的一些简单算法设计。
+
+
+
+应用1：假设2个线性表分别由带头结点的循环链表A和B存储。现要求设计一个算法，将A和B归并为一个线性表 。要求例如循环链表的特点，使用A和B的原存储空间，且合并后B成为一空表。输入中的单链表的长度不得在归并算法中利用，仅作为建表使用。
+
+参考函数原型：
+
+template<class ElemType>
+
+void Merge_Cur_Linklist( CirLinkList<ElemType> &A, CirLinkList<ElemType> &B );
+
+
+
+循环链表模板类原型参考如下：
+
+/* 循环单链表的结点定义 */
+template<class ElemType>
+struct LinkNode
+{
+    ElemType data;
+    LinkNode<ElemType> *next;
+    LinkNode(LinkNode<ElemType> *ptr = NULL){next = ptr;} //构造函数1，用于构造头结点
+    LinkNode(const ElemType &item, LinkNode<ElemType> *ptr = NULL) //构造函数2，用于构造其他结点
+    //函数参数表中的形参允许有默认值，但是带默认值的参数需要放后面
+    {
+        next = ptr;
+        data = item;
+    }
+    ElemType getData(){ return data; }   //取得结点的数据域的值
+    void SetLink( LinkNode<ElemType> *link ){ next = link; }  //修改结点的next域
+    void SetLink( ElemType value ){ data = value; }   //修改结点的next域
+};
+
+//带头结点的循环单链表
+template<class ElemType>
+class CirLinkList
+{
+   private:
+      LinkNode<ElemType> *head;   // 头结点
+      LinkNode<ElemType> *tail;   // 尾结点
+   public:
+      //无参数的构造函数
+      CirLinkList(){head = new LinkNode<ElemType>; tail = head; head->next = head;}
+      //带参数的构造函数
+      CirLinkList(const ElemType &item){head = new LinkNode<ElemType>(item); tail = head; head->next = head;}
+      //拷贝构造函数
+      CirLinkList(CirLinkList<ElemType> &List);
+      //析构函数
+      ~CirLinkList(){ListDestroy();}
+      //销毁链表
+      void ListDestroy();
+      //清空链表
+      void ListClear();
+      //返回链表的长度
+      int ListLength() const;
+      //判断链表是否为空表
+      bool ListEmpty() const;
+      //获取循环链表头结点
+      LinkNode<ElemType>* GetHead() { return head;}
+      //获取循环链表尾结点
+      LinkNode<ElemType>* GetTail() { return tail;}
+      //设置链表头结点
+      void SetHead(LinkNode<ElemType> *p){ head = p;}
+      //在链表的第pos个位置之后插入e元素
+      bool ListInsert_next(int pos,ElemType e);
+      //表头插入法动态生成链表
+      void CreateList_Head(int n, ElemType *A);
+      //表尾插入法动态生成链表
+      void CreateList_Tail(int n, ElemType *A);
+      //遍历链表
+      bool ListTraverse() const;
+};
+
+
+
+输入说明 :
+
+第一行：第一个循环链表的长度
+
+第二行：第一个循环链表的数据元素（元素与元素之间以空格分隔）
+
+第三行：第二个循环链表的长度
+
+第四行：第二个循环链表的数据元素（元素与元素之间以空格分隔）
+
+
+
+输出说明 :
+
+第一行：第一个循环链表的遍历结果
+
+第二行：第二个循环链表的遍历结果
+
+第三行：合并后循环链表的遍历结果
