@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 
 using namespace std;
 
@@ -17,6 +17,8 @@ public:
     //将顺序表置为空表
     void ListClear() { length = 0; }
 
+    ElemType getElem(int i) const;
+
     //返回顺序表的长度
     int getLength() const { return length; }
 
@@ -25,21 +27,13 @@ public:
     //在顺序表的第pos个位置之前插入e元素
     bool ListInsert(int pos, ElemType e);
 
-    //逆置顺序表
-    void Invert(int, int);
-
     //遍历顺序表
     int ListTraverse() const;
 };
 
 template<class ElemType>
-void SqList<ElemType>::Invert(int a, int b) {
-    ElemType w;
-    for (int i = a; i <= (a + b) / 2; i++) {
-        w = elem[i];
-        elem[i] = elem[b - i + a];
-        elem[b - i + a] = w;
-    }
+ElemType SqList<ElemType>::getElem(int i) const {
+    return elem[i];
 }
 
 template<class ElemType>
@@ -76,27 +70,31 @@ int SqList<ElemType>::ListTraverse() const {
 }
 
 template<class ElemType>
-void exchange(SqList<ElemType> &list, int pos) {
-    int n;
-    if (pos > 0 && pos < list.getLength()) {
-        n = list.getLength() - pos;
-        list.Invert(0, pos - 1 + n);
-        list.Invert(0, n - 1);
-        list.Invert(n, pos + n - 1);
+int listCompare(SqList<ElemType> &a, SqList<ElemType> &b) {
+    int min_len = a.getLength() > b.getLength() ? b.getLength() : a.getLength();
+    for (int i = 0; i < min_len; ++i) {
+        if (a.getElem(i) > b.getElem(i)) return 1;
+        else if (a.getElem(i) < b.getElem(i)) return -1;
+        else continue;
     }
+    return 0;
 }
 
 int main() {
-    int len, reverse_pos;
-    SqList<int> list;
-    cin >> len;
-    int obj[len];
-    for (int i = 0; i < len; i++) cin >> obj[i];
-    list.ListClear();
-    createList(list, len, obj);
-    list.ListTraverse();
-    cin >> reverse_pos;
-    exchange(list, reverse_pos);
-    list.ListTraverse();
+    int len1, len2;
+    SqList<int> list_1, list_2;
+    cin >> len1;
+    int obj1[len1];
+    for (int i = 0; i < len1; i++) cin >> obj1[i];
+    list_1.ListClear();
+    createList(list_1, len1, obj1);
+    list_1.ListTraverse();
+    cin >> len2;
+    int obj2[len2];
+    for (int i = 0; i < len2; i++) cin >> obj2[i];
+    list_2.ListClear();
+    createList(list_2, len2, obj2);
+    list_2.ListTraverse();
+    cout << listCompare(list_1, list_2) << endl;
     return 0;
 }
