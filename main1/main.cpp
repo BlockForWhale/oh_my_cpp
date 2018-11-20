@@ -110,6 +110,22 @@ void Merge_L_Order(LinkList<ElemType> &A, LinkList<ElemType> &B) {
     else node_tmp->next = real_next2;
 }
 
+tmp
+void Purge_Lk_OL(LinkList<ElemType> &A) {
+    Node *head;
+    head = A.GetHead();
+    int k = 0;
+    while (head->next) {
+        if (k == 0) {
+            head = head->next;
+            k++;
+        } else {
+            if (head->data != head->next->data) head = head->next;
+            else head->next = head->next->next;
+        }
+    }
+}
+
 int main() {
     int i, n1, n2;
     LinkList<int> node_list1, node_list2;
@@ -118,12 +134,7 @@ int main() {
     for (i = 0; i < n1; i++) cin >> array_list1[i];
     node_list1.CreateList_Head(n1, array_list1);
     node_list1.ListTraverse();
-    cin >> n2;//length
-    int array_list2[n2];
-    for (i = 0; i < n2; i++) cin >> array_list2[i];
-    node_list2.CreateList_Head(n2, array_list2);
-    node_list2.ListTraverse();
-    Merge_L_Order(node_list1, node_list2);
+    Purge_Lk_OL(node_list1);
     node_list1.ListTraverse();
     return 0;
 }
