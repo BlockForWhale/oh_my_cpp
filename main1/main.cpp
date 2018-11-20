@@ -73,6 +73,23 @@ void Linklist_Contact(LinkList<ElemType> &A, LinkList<ElemType> &B) {
     }
 }
 
+tmp
+void Merge_L(LinkList<ElemType> &A, LinkList<ElemType> &B) {
+    Node *real_next1, *real_next2, *node_tmp, *node_tmp2 = NULL;
+    real_next1 = A.GetHead()->next;
+    real_next2 = B.GetHead()->next;
+    while (real_next2 && real_next1) {
+        node_tmp = real_next1->next;
+        real_next1->next = real_next2;
+        if (node_tmp) {
+            node_tmp2 = real_next2->next;
+            real_next2->next = node_tmp;
+        }
+        real_next1 = node_tmp;
+        real_next2 = node_tmp2;
+    }
+}
+
 int main() {
     int i, n1, n2;
     LinkList<int> node_list1, node_list2;
@@ -86,7 +103,7 @@ int main() {
     for (i = 0; i < n2; i++) cin >> array_list2[i];
     node_list2.CreateList_Head(n2, array_list2);
     node_list2.ListTraverse();
-    Linklist_Contact(node_list1, node_list2);
+    Merge_L(node_list1, node_list2);
     node_list1.ListTraverse();
     return 0;
 }
