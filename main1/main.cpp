@@ -2,176 +2,159 @@
 
 using namespace std;
 
-#define tmp template<class ElemType>
-#define Node LinkNode<ElemType>
+#define INT32_MAX 2147483647
 
-struct node {
-    int number;
-    int code;
+template<class ElemType>
+class SqList {
+private:
+    ElemType *elem;   // 存储空间基址
+    int length;               // 当前长度
+    int listsize;        // 允许的最大存储容量(以sizeof(ElemType)为单位
+public:
+    SqList(int maxsize = 20);
+
+    //删除顺序表
+    ~SqList() { delete[] elem; }
+
+    //将顺序表置为空表
+    void ListClear() { length = 0; }
+
+    ElemType getElem(int i) const;
+
+    bool setElem(int i, ElemType e);
+
+    //返回顺序表的长度
+    int getLength() const { return length; }
+
+    void setLength(int len) { length = len; }
+
+    //在顺序表的第pos个位置之前插入e元素
+    bool ListInsert(int pos, ElemType e);
+
+    //删除顺序表的第pos个位置的元素
+    bool ListDelete(int pos);
+
+    //遍历顺序表
+    int ListTraverse() const;
 };
 
 template<class ElemType>
-struct LinkNode {
-    ElemType data;
-    Node *next;
+ElemType SqList<ElemType>::getElem(int i) const {
+    return elem[i];
+}
 
-    LinkNode(Node *ptr = NULL) { next = ptr; }
-
-    LinkNode(const ElemType &item, Node *ptr = NULL) {
-        next = ptr;
-        data = item;
-    }
-
-    ElemType getData() { return data; }
-
-    void SetLink(Node *link) { next = link; }
-
-    void SetLink(ElemType value) { data = value; }
-};
-
-
-tmp
-class CirLinkList {
-private:
-    Node *head;
-    Node *tail;
-
-public:
-
-    CirLinkList() {
-        head = new Node;
-        tail = head;
-        head->next = head;
-    }
-
-
-    CirLinkList(const ElemType &item) {
-        head = new Node(item);
-        tail = head;
-        head->next = head;
-    }
-
-    CirLinkList(CirLinkList<ElemType> &List);
-
-    Node *GetHead() { return head; }
-
-
-    Node *GetTail() { return tail; }
-
-    int ListLength() const;
-
-
-    void SetHead(Node *p) { head = p; }
-
-
-    void CreateList_Tail(int n, ElemType *A);
-
-    bool ListTraverse() const;
-};
-
-tmp
-bool CirLinkList<ElemType>::ListTraverse() const {
-    Node *p;
-    p = head->next;
-    while (p != head) {
-        cout << p->data.number << " " << p->data.code << endl;
-        p = p->next;
-    }
+template<class ElemType>
+bool SqList<ElemType>::setElem(int i, ElemType e) {
+    elem[i] = e;
     return true;
 }
 
-tmp
-void CirLinkList<ElemType>::CreateList_Tail(int n, ElemType *A) {
-    Node *node, *tmp_node;
-    node = head;
-
-    for (int i = 0; i < n; i++) {
-        tmp_node = new Node;
-        tmp_node->data = A[i];
-
-        node->next = tmp_node;
-        node = tmp_node;
-    }
-    node->next = head;
-    tail = node;
-    this->ListTraverse();
+template<class ElemType>
+bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
+    //cout << "Inserting " << s << " into pos:" << pos << ", len=" << length << endl;
+    for (int i = length - 1; i >= pos - 1; i--) elem[i + 1] = elem[i];
+    elem[pos - 1] = s;
+    length += 1;
+    return true;
 }
 
-tmp
-void Merge_Cur_Linklist(CirLinkList<ElemType> &A, CirLinkList<ElemType> &B) {
-    Node *ah, *at, *bh, *bt;
-    ah = A.GetHead();
-    bh = B.GetHead();
-    at = A.GetTail();
-    bt = B.GetTail();
-    if (bh->next != bh) {
-        at->next = bh->next;
-        bt->next = ah;
-        bh->next = bh;
+template<class ElemType>
+bool SqList<ElemType>::ListDelete(int pos) {
+    for (int i = pos; i < length - 1; i++) {
+        elem[i] = elem[i + 1];
     }
+    length--;
+    return true;
 }
 
-tmp
-int CirLinkList<ElemType>::ListLength() const {
-    int length = 0;
-    Node *p;
-    p = head->next;
-    if (p == head) return 0;
-    while (p != head) {
-        length++;
-        p = p->next;
-    }
-    return length;
+template<class ElemType>
+SqList<ElemType>::SqList(int ms) {
+    if (ms == 0) ms = 10;
+    elem = new ElemType[ms];
+    listsize = ms;
+    length = 0;
 }
 
-tmp
-void Joseph(CirLinkList<ElemType> &A, int m) {
-    Node *aao, *hbj, *hfdsf, *hhsgdfdsfsdfdsf;
-    ElemType cur_node;
-    int length = A.ListLength();
-    hhsgdfdsfsdfdsf = A.GetHead();
-    aao = hhsgdfdsfsdfdsf;
-    hbj = hhsgdfdsfsdfdsf->next;
+template<class ElemType>
+void createList(SqList<ElemType> &list, int len, ElemType data[]) {
+    //cout << "Creating list..." << "len is " << len << endl;
+    for (int i = 0; i < len; i++) list.ListInsert(i + 1, data[i]);
+}
+
+template<class ElemType>
+int SqList<ElemType>::ListTraverse() const {
+    //cout << "Current len :" << length << endl;
     for (int i = 0; i < length; i++) {
-        for (int j = 0; j < m - 1; j++) {
-            aao = hbj;
-            hbj = hbj->next;
-            if (hbj == hhsgdfdsfsdfdsf) {
-                aao = hhsgdfdsfsdfdsf;
-                hbj = hbj->next;
+        cout << *(elem + i) << " ";
+    }
+    cout << endl;
+    return 1;
+}
+
+template<class ElemType>
+void Purge_Sq_OL(SqList<ElemType> &list) {
+    for (int i = 0; i < list.getLength() - 1; i++) {
+        for (int j = i + 1; j < list.getLength(); j++) {
+            if (list.getElem(i) == list.getElem(j) && list.getElem(i) != INT32_MAX) {
+                list.setElem(j, INT32_MAX);
             }
         }
-        cur_node = hbj->getData();
-        m = cur_node.code;
-        if (i < length - 1)
-            cout << cur_node.number << "->";
-        else
-            cout << cur_node.number;
-        hfdsf = hbj;
-        hbj = hbj->next;
-        aao->next = hbj;
-        delete (hfdsf);
-        if (hbj == hhsgdfdsfsdfdsf) {
-            aao = hhsgdfdsfsdfdsf;
-            hbj = hbj->next;
-        }
     }
+    int i = 0;
+    while (i < list.getLength()) {
+        if (list.getElem(i) == INT32_MAX) list.ListDelete(i);
+        else i++;
+    }
+}
+
+template<class ElemType>
+void Intersect_Sq_OL_C(const SqList<ElemType> &A, const SqList<ElemType> &B, SqList<ElemType> &C) {
+    int i = 0, j = 0, k = 0;
+    while (i < A.getLength() || j < B.getLength()) {
+        if (A.getElem(i) < B.getElem(j))
+            i++;
+        else if (A.getElem(i) > B.getElem(j))
+            j++;
+        else if (A.getElem(i) == B.getElem(j))
+            k++, C.ListInsert(k, A.getElem(i)), i++, j++;
+    }
+}
+
+template<class ElemType>
+void Search_Pairs(SqList<ElemType> &A, int sum) {
+    int qp, asd, we, iop;
+    int temp1, temp2;
+    ElemType t;
+    qp = 0;
+    asd = A.getLength() - 1;
+    A.getElem(qp);
+    iop = 0;
+    while (qp < asd) {
+        temp1 = A.getElem(qp);
+        temp2 = A.getElem(asd);
+        we = temp1 + temp2;
+        if (we == sum) {
+            iop = 1;
+            cout << temp1 << "," << temp2;
+            ++qp;
+            --asd;
+            if (qp < asd) cout << endl;
+        }
+        if (we < sum) ++qp;
+        if (we > sum) --asd;
+    }
+    if (iop == 0) cout << "NULL";
 }
 
 int main() {
-    int i, n, m, num;
-    CirLinkList<node> A;
-    LinkNode<node> *cur_p, *temp_p, *head;
+    SqList<int> sqlist;
+    int i, n, s;
     cin >> n;
-    node Input[n], ttt;
-    for (i = 0; i < n; i++) {
-        Input[i].number = i + 1;
-        cin >> Input[i].code;
-    }
-    cin >> m;
-    A.CreateList_Tail(n, Input);
-    cout << endl;
-    head = A.GetHead();
-    Joseph(A, m);
+    int array[n];
+    for (i = 0; i < n; i++) cin >> array[i];
+    cin >> s;
+    createList(sqlist, n, array);
+    sqlist.ListTraverse();
+    Search_Pairs(sqlist, s);
     return 0;
 }
