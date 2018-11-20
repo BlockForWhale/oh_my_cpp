@@ -22,18 +22,17 @@ struct LinkNode {
 tmp
 class LinkList {
 private:
-    Node *head;
+    LinkNode<ElemType> *head;   // 头结点
 public:
     //无参数的构造函数
-    LinkList() { head = new Node; }
+    LinkList() { head = new LinkNode<ElemType>; }
 
     //带参数的构造函数
-    LinkList(const ElemType &item) { head = new Node(item); }
+    LinkList(const ElemType &item) { head = new LinkNode<ElemType>(item); }
 
-    //获取链表头结点
-    Node *GetHead() const { return head; }
+    LinkNode<ElemType> *GetHead() const { return head; }
 
-    void CreateList_Head(int n, ElemType *m);
+    void CreateList_Head(int n, ElemType *A);
 
     bool ListTraverse() const;
 };
@@ -62,40 +61,32 @@ bool LinkList<ElemType>::ListTraverse() const {
 }
 
 tmp
-void Exchange_L(LinkList<ElemType> &list, int m) {
-    Node *head_node;
-    Node *point, *real_next, *q;
-    int k = 1;
-    head_node = list.GetHead();
-    if (head_node->next != NULL && m != 0) {
-        point = head_node->next;
-        while (point != NULL && k < m) { // 查找am所在结点
-            point = point->next;
-            k++;
-        }
-        if (point && point->next) {
-            real_next = head_node->next;
-            head_node->next = point->next;
-            point->next = NULL;
-            q = head_node->next;
-            while (q->next)
-                q = q->next;
-            q->next = real_next;
+void Linklist_Contact(LinkList<ElemType> &A, LinkList<ElemType> &B) {
+    Node *next;
+    next = A.GetHead();
+    while (true) {
+        next = next->next;
+        if (next->next == NULL) {
+            next->next = B.GetHead()->next;
+            break;
         }
     }
 }
 
 int main() {
-    int i, n;
-    LinkList<int> node_list;
-    cin >> n;//length
-    int array_list[n];
-    for (i = 0; i < n; i++) cin >> array_list[i];
-    node_list.CreateList_Head(n, array_list);
-    node_list.ListTraverse();
-    int asd;
-    cin >> asd;
-    Exchange_L(node_list, asd);
-    node_list.ListTraverse();
+    int i, n1, n2;
+    LinkList<int> node_list1, node_list2;
+    cin >> n1;//length
+    int array_list1[n1];
+    for (i = 0; i < n1; i++) cin >> array_list1[i];
+    node_list1.CreateList_Head(n1, array_list1);
+    node_list1.ListTraverse();
+    cin >> n2;//length
+    int array_list2[n2];
+    for (i = 0; i < n2; i++) cin >> array_list2[i];
+    node_list2.CreateList_Head(n2, array_list2);
+    node_list2.ListTraverse();
+    Linklist_Contact(node_list1, node_list2);
+    node_list1.ListTraverse();
     return 0;
 }
