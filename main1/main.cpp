@@ -32,11 +32,22 @@ public:
     bool ListInsert(int pos, ElemType e);
 
     //删除顺序表的第pos个位置的元素
-    bool ListDelete(int pos);
+    bool ListDelete(int pos, ElemType &e);
 
     //遍历顺序表
     int ListTraverse() const;
+
+    int locateElem(ElemType e);
+
+    void ListDestroy();
 };
+
+template<class ElemType>
+void SqList<ElemType>::ListDestroy() {
+    delete elem;
+    listsize = 0;
+    length = 0;
+}
 
 template<class ElemType>
 ElemType SqList<ElemType>::getElem(int i) const {
@@ -51,7 +62,6 @@ bool SqList<ElemType>::setElem(int i, ElemType e) {
 
 template<class ElemType>
 bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
-    //cout << "Inserting " << s << " into pos:" << pos << ", len=" << length << endl;
     for (int i = length - 1; i >= pos - 1; i--) elem[i + 1] = elem[i];
     elem[pos - 1] = s;
     length += 1;
@@ -59,9 +69,11 @@ bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
 }
 
 template<class ElemType>
-bool SqList<ElemType>::ListDelete(int pos) {
-    for (int i = pos; i < length - 1; i++) {
-        elem[i] = elem[i + 1];
+bool SqList<ElemType>::ListDelete(int pos, ElemType &e) {
+    if (pos < 1 || pos > length) return false;
+    e = elem[pos - 1];
+    for (int i = pos; i < length; i++) {
+        elem[i - 1] = elem[i];
     }
     length--;
     return true;
@@ -77,13 +89,11 @@ SqList<ElemType>::SqList(int ms) {
 
 template<class ElemType>
 void createList(SqList<ElemType> &list, int len, ElemType data[]) {
-    //cout << "Creating list..." << "len is " << len << endl;
     for (int i = 0; i < len; i++) list.ListInsert(i + 1, data[i]);
 }
 
 template<class ElemType>
 int SqList<ElemType>::ListTraverse() const {
-    //cout << "Current len :" << length << endl;
     for (int i = 0; i < length; i++) {
         cout << *(elem + i) << " ";
     }
@@ -92,19 +102,24 @@ int SqList<ElemType>::ListTraverse() const {
 }
 
 template<class ElemType>
-void Purge_Sq(SqList<ElemType> &list) {
-    for (int i = 0; i < list.getLength() - 1; i++) {
-        for (int j = i + 1; j < list.getLength(); j++) {
-            if (list.getElem(i) == list.getElem(j) && list.getElem(i) != INT32_MAX) {
-                list.setElem(j, INT32_MAX);
-            }
-        }
+int SqList<ElemType>::locateElem(ElemType e) {
+    int i;
+    for (i = 0; i < length; i++) {
+        if (e != *(elem + i)) continue;
+        else return i;
     }
-    int i = 0;
-    while (i < list.getLength()) {
-        if (list.getElem(i) == INT32_MAX) list.ListDelete(i);
-        else i++;
+    return -1;
+}
+
+template<class ElemType>
+void Union_Sq(SqList<ElemType> &A, SqList<ElemType> &B) {
+    ElemType e;
+    int La_Len = A.getLength();
+    while (B.getLength() != 0) {
+        B.ListDelete(1, e);
+        if (A.locateElem(e) == -1) A.ListInsert(++La_Len, e);
     }
+    B.ListDestroy();
 }
 
 
@@ -117,7 +132,13 @@ int main() {
     list_1.ListClear();
     createList(list_1, len1, obj1);
     list_1.ListTraverse();
-    Purge_Sq(list_1);
+    cin >> len2;
+    int obj2[len2];
+    for (int i = 0; i < len2; i++) cin >> obj2[i];
+    list_2.ListClear();
+    createList(list_2, len2, obj2);
+    list_2.ListTraverse();
+    Union_Sq(list_1, list_2);
     list_1.ListTraverse();
     return 0;
 }
