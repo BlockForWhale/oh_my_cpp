@@ -146,15 +146,74 @@ void Search_Pairs(SqList<ElemType> &A, int sum) {
     if (iop == 0) cout << "NULL";
 }
 
-int main() {
-    SqList<int> sqlist;
-    int i, n, s;
+template<class ElemType>
+bool Search_Max_Min(SqList<ElemType> &A, ElemType &max, ElemType &min) {
+    int len;
+    ElemType asdfghj;
+    len = A.getLength();
+
+    if (len == 0) return false;
+
+    for (int i = 0; i < len; i++) {
+        asdfghj = A.getElem(i);
+        if (i == 0) {
+            max = asdfghj;
+            min = asdfghj;
+        } else {
+            if (max < asdfghj) max = asdfghj;
+            if (min > asdfghj) min = asdfghj;
+        }
+    }
+    return true;
+}
+
+template<class ElemType>
+void run(SqList<ElemType> &asd) {
+    int n;
     cin >> n;
-    int array[n];
-    for (i = 0; i < n; i++) cin >> array[i];
-    cin >> s;
-    createList(sqlist, n, array);
-    sqlist.ListTraverse();
-    Search_Pairs(sqlist, s);
+    ElemType max, min, in[n];
+    for (int i = 0; i < n; i++) cin >> in[i];
+
+    createList(asd, n, in);
+
+    asd.ListTraverse();
+    Search_Max_Min(asd, max, min);
+    cout << max << endl << min;
+
+}
+
+int main() {
+    int n;
+    cin >> n;
+    int have = 0;
+    SqList<int> A1;
+    SqList<double> A2;
+    SqList<char> A3;
+    SqList<string> A4;
+    switch (n) {
+        case 0:
+
+            have = 1;
+            run(A1);
+            break;
+        case 1:
+
+            have = 1;
+            run(A2);
+            break;
+        case 2:
+
+            have = 1;
+            run(A3);
+            break;
+        case 3:
+
+            have = 1;
+            run(A4);
+            break;
+    }
+    if (have == 0) {
+        cout << "err";
+    }
     return 0;
 }
