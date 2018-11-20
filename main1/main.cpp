@@ -107,17 +107,35 @@ void Purge_Sq_OL(SqList<ElemType> &list) {
     }
 }
 
+template<class ElemType>
+void Intersect_Sq_OL_C(const SqList<ElemType> &A, const SqList<ElemType> &B, SqList<ElemType> &C) {
+    int i = 0, j = 0, k = 0;
+    while (i < A.getLength() || j < B.getLength()) {
+        if (A.getElem(i) < B.getElem(j))
+            i++;
+        else if (A.getElem(i) > B.getElem(j))
+            j++;
+        else if (A.getElem(i) == B.getElem(j))
+            k++, C.ListInsert(k, A.getElem(i)), i++, j++;
+    }
+}
 
 int main() {
-    int len1;
-    SqList<int> list_1, list_2;
+    int len1, len2;
+    SqList<int> list_1, list_2, list_3;
     cin >> len1;
     int obj1[len1];
     for (int i = 0; i < len1; i++) cin >> obj1[i];
     list_1.ListClear();
     createList(list_1, len1, obj1);
     list_1.ListTraverse();
-    Purge_Sq_OL(list_1);
-    list_1.ListTraverse();
+    cin >> len2;
+    int obj2[len2];
+    for (int i = 0; i < len2; i++) cin >> obj2[i];
+    list_2.ListClear();
+    createList(list_2, len2, obj2);
+    list_2.ListTraverse();
+    Intersect_Sq_OL_C(list_1, list_2, list_3);
+    list_3.ListTraverse();
     return 0;
 }
