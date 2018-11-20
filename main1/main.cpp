@@ -1,7 +1,6 @@
 #include <iostream>
 
 using namespace std;
-
 #define tmp template<class ElemType>
 #define Node LinkNode<ElemType>
 
@@ -90,6 +89,27 @@ void Merge_L(LinkList<ElemType> &A, LinkList<ElemType> &B) {
     }
 }
 
+tmp
+void Merge_L_Order(LinkList<ElemType> &A, LinkList<ElemType> &B) {
+    Node *real_next1, *real_next2, *node_tmp = NULL;
+    real_next1 = A.GetHead()->next;
+    real_next2 = B.GetHead()->next;
+    node_tmp = A.GetHead();
+    while (real_next2 && real_next1) {
+        if (real_next1->data <= real_next2->data) {
+            node_tmp->next = real_next1;
+            node_tmp = real_next1;
+            real_next1 = real_next1->next;
+        } else {
+            node_tmp->next = real_next2;
+            node_tmp = real_next2;
+            real_next2 = real_next2->next;
+        }
+    }
+    if (real_next1) node_tmp->next = real_next1;
+    else node_tmp->next = real_next2;
+}
+
 int main() {
     int i, n1, n2;
     LinkList<int> node_list1, node_list2;
@@ -103,7 +123,7 @@ int main() {
     for (i = 0; i < n2; i++) cin >> array_list2[i];
     node_list2.CreateList_Head(n2, array_list2);
     node_list2.ListTraverse();
-    Merge_L(node_list1, node_list2);
+    Merge_L_Order(node_list1, node_list2);
     node_list1.ListTraverse();
     return 0;
 }
