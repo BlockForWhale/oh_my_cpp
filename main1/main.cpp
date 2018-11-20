@@ -34,10 +34,6 @@ private:
 public:
     LinkQueue();
 
-    bool LinkQueueDestroy();
-
-    bool LinkQueueClear();
-
     int QueueLength() const { return length; }
 
     bool QueueisEmpty() const;
@@ -71,19 +67,13 @@ bool LinkQueue<ElemType>::QueueisEmpty() const { return front == rear; }
 
 tmpl
 bool LinkQueue<ElemType>::deQueue(ElemType &e) {
-
     if (front == rear) return false;
-
     QNode *p;
-
     p = front->next;
     e = p->data;
-
-    front->next = p->next;
+    front->next = p->next;  // 修改头结点指针
     length--;
-
     if (rear == p) rear = front;
-
     delete (p);
     return true;
 }
@@ -97,7 +87,6 @@ bool LinkQueue<ElemType>::enQueue(ElemType e) {
     s->next = NULL;
     rear->next = s;
     rear = s;
-    length = length + 1;
     return true;
 }
 
