@@ -1,5 +1,4 @@
 #include <iostream>
-#include <bitset>
 
 using namespace std;
 
@@ -64,6 +63,7 @@ bool SqQueue<ElemType>::DoubleSpace() {
     front = 0;
     rear = maxSize;
     maxSize = maxSize * 2;
+    delete[]tmp;
     return true;
 }
 
@@ -84,57 +84,34 @@ bool SqQueue<ElemType>::deQueue(ElemType &e) {
     return true;
 }
 
-int goat(int st) { return (st & GOAT) != 0; }
+template<class ElemType>
+void decode(SqQueue<ElemType> &S, string &code) {
+    int len = code.size();
+    int i = 1, j;
+    char c;
+    ElemType e;
 
-int cabbage(int st) { return (st & CABBAGE) != 0; }
 
-int wolf(int st) { return (st & WOLF) != 0; }
-
-int farmer(int st) { return (st & FARMER) != 0; }
-
-int isSafe(int st) {
-    return (goat(st) == cabbage(st)) && (goat(st) != farmer(st)) ? 0 : (goat(st) == wolf(st)) &&
-                                                                       (goat(st) != farmer(st)) ? 0 : 1;
-}
-
-tmpl
-void tri(SqQueue<ElemType> &sq) {
-    int pm, st, nn;
-    int ro[16];
-
-    sq.enQueue(0x00);
-
-    for (int i = 0; i < 16; i++) ro[i] = -1;
-
-    ro[0] = 0;
-
-    while (!sq.QueueisEmpty() && (ro[15] == -1)) {
-        sq.deQueue(st);
-        for (pm = 1; pm <= 8; pm <<= 1) {
-            if (farmer(st) == (0 != (st & pm))) {
-                nn = st ^ (8 | pm);
-                if (ro[nn] == -1 && isSafe(nn)) {
-                    ro[nn] = st;
-                    sq.enQueue(nn);
-                }
-            }
-        }
+    for (int i = 0; i < len; i++) {
+        if (code[i] == ' ') continue;
+        S.enQueue(code[i]);
     }
-    if (ro[15] != -1) {
-        for (st = 15; st >= 0; st = ro[st]) {
-            bitset<4> bs(st);
-            if (st > 0) cout << bs << endl;
-            else cout << bs;
-            if (st == 0) break;
+
+    while (!S.QueueisEmpty()) {
+        S.deQueue(e);
+        cout << e;
+        if (!S.QueueisEmpty()) {
+            S.deQueue(e);
+            S.enQueue(e);
         }
-    } else {
-        cout << "No Solution";
     }
 }
 
 int main() {
-    SqQueue<int> su;
-    tri(su);
+    SqQueue<char> su;
+    string s;
+    getline(cin, s);
+    decode(su, s);
     return 0;
 }
 
