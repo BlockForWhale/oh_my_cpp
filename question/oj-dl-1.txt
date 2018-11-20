@@ -1,0 +1,67 @@
+目的：使用C++模板设计顺序队列的抽象数据类型（ADT）。并在此基础上，使用顺序队列ADT的基本操作，设计并实现简单应用的算法设计。
+
+内容：（1）请参照顺序栈的ADT模板，设计顺序队列的抽象数据类型。（由于该环境目前仅支持单文件的编译，故将所有内容都集中在一个源文件内。在实际的设计中，推荐将抽象类及对应的派生类分别放在单独的头文件中。参考教材、课件，以及网盘中的顺序栈ADT原型文件，自行设计顺序队列的ADT。）
+
+
+
+（2）ADT的简单应用：使用该ADT设计并实现若干应用顺序队列的算法设计。
+
+
+
+应用1：要求设计一个算法，使用顺序队列，设计并实现打印输出杨辉三角形前N行元素的算法。
+
+参考函数原型：
+
+template<class ElemType>
+
+void YangHuiTriangle(SqQueue<ElemType> &Q, int N);
+
+
+
+顺序队列的ADT原型如下所示：
+
+
+
+const int MAXLISTSIZE = 100;
+
+
+
+template<class ElemType>
+class SqQueue{
+   private:
+      ElemType *elem;   // 存储空间基址
+      int front;   // 队头指针
+      int rear;   // 队尾指针
+      int maxSize;        // 允许的最大存储容量(以sizeof(ElemType)为单位
+   public:
+      //初始化顺序队列
+      SqQueue(int ms = 20);
+      //删除顺序队列
+      ~SqQueue(){QueueDestroy();}
+      //将顺序队列置为空
+      bool QueueClear( );
+      //设置顺序栈的长度
+      //bool SetListLength(int len);
+      //判断顺序队列是否为空
+      bool QueueisEmpty() const{ return front == rear; }
+      //判断顺序队列是否为满
+      bool QueueFull() const;
+      //用e返回队头元素
+      bool GetFront(ElemType &e);
+      //入队
+      bool enQueue(const ElemType &e);
+      //出队
+      bool deQueue(ElemType &e);
+      //销毁顺序队列
+      bool QueueDestroy();
+      //顺序队列最大存储空间加倍
+      bool DoubleSpace();
+};
+
+输入说明 :
+
+第一行：杨辉三角形的行数
+
+输出说明 :
+
+杨辉三角形（左对齐）

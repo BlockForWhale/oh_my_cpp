@@ -1,219 +1,108 @@
-#include <iostream>
+#include<iostream>
 
 using namespace std;
 
-#define INT32_MAX 2147483647
+#define tmpl template<class ElemType>
 
-template<class ElemType>
-class SqList {
+tmpl
+class SqQueue {
 private:
-    ElemType *elem;   // 存储空间基址
-    int length;               // 当前长度
-    int listsize;        // 允许的最大存储容量(以sizeof(ElemType)为单位
+    ElemType *elem;
+    int front;
+    int rear;
+    int maxSize;
 public:
-    SqList(int maxsize = 20);
+    SqQueue(int m = 20);
 
-    //删除顺序表
-    ~SqList() { delete[] elem; }
+    bool QueueClear();
 
-    //将顺序表置为空表
-    void ListClear() { length = 0; }
+    bool QueueisEmpty() const { return front == rear; }
 
-    ElemType getElem(int i) const;
+    bool QueueFull() const;
 
-    bool setElem(int i, ElemType e);
+    bool GetFront(ElemType &e);
 
-    //返回顺序表的长度
-    int getLength() const { return length; }
+    bool enQueue(const ElemType &e);
 
-    void setLength(int len) { length = len; }
+    bool deQueue(ElemType &e);
 
-    //在顺序表的第pos个位置之前插入e元素
-    bool ListInsert(int pos, ElemType e);
+    bool QueueDestroy();
 
-    //删除顺序表的第pos个位置的元素
-    bool ListDelete(int pos);
-
-    //遍历顺序表
-    int ListTraverse() const;
+    bool DoubleSpace();
 };
 
-template<class ElemType>
-ElemType SqList<ElemType>::getElem(int i) const {
-    return elem[i];
+tmpl
+SqQueue<ElemType>::SqQueue(int m) {
+    if (m == 0) m = 100;
+    elem = new ElemType[m];
+    if (!elem) return;
+    rear = 0;
+    front = rear;
+    maxSize = m;
 }
 
-template<class ElemType>
-bool SqList<ElemType>::setElem(int i, ElemType e) {
-    elem[i] = e;
+tmpl
+bool SqQueue<ElemType>::GetFront(ElemType &e) {
+
+    if (front == rear) return false;
+    e = elem[(front + 1) % maxSize];
     return true;
 }
 
-template<class ElemType>
-bool SqList<ElemType>::ListInsert(int pos, ElemType s) {
-    //cout << "Inserting " << s << " into pos:" << pos << ", len=" << length << endl;
-    for (int i = length - 1; i >= pos - 1; i--) elem[i + 1] = elem[i];
-    elem[pos - 1] = s;
-    length += 1;
+tmpl
+bool SqQueue<ElemType>::DoubleSpace() {
+    ElemType *tmp;
+    tmp = elem;
+    elem = new ElemType[maxSize * 2];
+    if (!elem) return false;
+    for (int i = 0; i < maxSize; i++) elem[i] = tmp[(front + i) % maxSize];
+    front = 0;
+    rear = maxSize;
+    maxSize = maxSize * 2;
     return true;
 }
 
-template<class ElemType>
-bool SqList<ElemType>::ListDelete(int pos) {
-    for (int i = pos; i < length - 1; i++) {
-        elem[i] = elem[i + 1];
-    }
-    length--;
+tmpl
+bool SqQueue<ElemType>::enQueue(const ElemType &e) {
+    if ((rear + 1) % maxSize == front) DoubleSpace();
+    rear = (rear + 1) % maxSize;
+    elem[rear] = e;
     return true;
 }
 
-template<class ElemType>
-SqList<ElemType>::SqList(int ms) {
-    if (ms == 0) ms = 10;
-    elem = new ElemType[ms];
-    listsize = ms;
-    length = 0;
+
+tmpl
+bool SqQueue<ElemType>::deQueue(ElemType &e) {
+    if (front == rear) return false;
+    front = (front + 1) % maxSize;
+    e = elem[front];
+    return true;
 }
 
-template<class ElemType>
-void createList(SqList<ElemType> &list, int len, ElemType data[]) {
-    //cout << "Creating list..." << "len is " << len << endl;
-    for (int i = 0; i < len; i++) list.ListInsert(i + 1, data[i]);
-}
-
-template<class ElemType>
-int SqList<ElemType>::ListTraverse() const {
-    //cout << "Current len :" << length << endl;
-    for (int i = 0; i < length; i++) {
-        cout << *(elem + i) << " ";
-    }
-    cout << endl;
-    return 1;
-}
-
-template<class ElemType>
-void Purge_Sq_OL(SqList<ElemType> &list) {
-    for (int i = 0; i < list.getLength() - 1; i++) {
-        for (int j = i + 1; j < list.getLength(); j++) {
-            if (list.getElem(i) == list.getElem(j) && list.getElem(i) != INT32_MAX) {
-                list.setElem(j, INT32_MAX);
-            }
+tmpl
+void tri(SqQueue<ElemType> &sq, int nat) {
+    int a, x;
+    sq.enQueue(1);
+    for (int n = 2; n <= nat + 1; n++) {
+        sq.enQueue(1);
+        for (int i = 1; i <= n - 2; i++) {
+            sq.deQueue(a);
+            cout << a << " ";
+            sq.GetFront(x);
+            a = a + x;
+            sq.enQueue(a);
         }
+        sq.deQueue(x);
+        if (n == nat + 1) cout << x;
+        else cout << x << endl;
+        sq.enQueue(1);
     }
-    int i = 0;
-    while (i < list.getLength()) {
-        if (list.getElem(i) == INT32_MAX) list.ListDelete(i);
-        else i++;
-    }
-}
-
-template<class ElemType>
-void Intersect_Sq_OL_C(const SqList<ElemType> &A, const SqList<ElemType> &B, SqList<ElemType> &C) {
-    int i = 0, j = 0, k = 0;
-    while (i < A.getLength() || j < B.getLength()) {
-        if (A.getElem(i) < B.getElem(j))
-            i++;
-        else if (A.getElem(i) > B.getElem(j))
-            j++;
-        else if (A.getElem(i) == B.getElem(j))
-            k++, C.ListInsert(k, A.getElem(i)), i++, j++;
-    }
-}
-
-template<class ElemType>
-void Search_Pairs(SqList<ElemType> &A, int sum) {
-    int qp, asd, we, iop;
-    int temp1, temp2;
-    ElemType t;
-    qp = 0;
-    asd = A.getLength() - 1;
-    A.getElem(qp);
-    iop = 0;
-    while (qp < asd) {
-        temp1 = A.getElem(qp);
-        temp2 = A.getElem(asd);
-        we = temp1 + temp2;
-        if (we == sum) {
-            iop = 1;
-            cout << temp1 << "," << temp2;
-            ++qp;
-            --asd;
-            if (qp < asd) cout << endl;
-        }
-        if (we < sum) ++qp;
-        if (we > sum) --asd;
-    }
-    if (iop == 0) cout << "NULL";
-}
-
-template<class ElemType>
-bool Search_Max_Min(SqList<ElemType> &A, ElemType &max, ElemType &min) {
-    int len;
-    ElemType asdfghj;
-    len = A.getLength();
-
-    if (len == 0) return false;
-
-    for (int i = 0; i < len; i++) {
-        asdfghj = A.getElem(i);
-        if (i == 0) {
-            max = asdfghj;
-            min = asdfghj;
-        } else {
-            if (max < asdfghj) max = asdfghj;
-            if (min > asdfghj) min = asdfghj;
-        }
-    }
-    return true;
-}
-
-template<class ElemType>
-void run(SqList<ElemType> &asd) {
-    int n;
-    cin >> n;
-    ElemType max, min, in[n];
-    for (int i = 0; i < n; i++) cin >> in[i];
-
-    createList(asd, n, in);
-
-    asd.ListTraverse();
-    Search_Max_Min(asd, max, min);
-    cout << max << endl << min;
-
 }
 
 int main() {
     int n;
+    SqQueue<int> su;
     cin >> n;
-    int have = 0;
-    SqList<int> A1;
-    SqList<double> A2;
-    SqList<char> A3;
-    SqList<string> A4;
-    switch (n) {
-        case 0:
-
-            have = 1;
-            run(A1);
-            break;
-        case 1:
-
-            have = 1;
-            run(A2);
-            break;
-        case 2:
-
-            have = 1;
-            run(A3);
-            break;
-        case 3:
-
-            have = 1;
-            run(A4);
-            break;
-    }
-    if (have == 0) {
-        cout << "err";
-    }
+    tri(su, n);
     return 0;
 }
