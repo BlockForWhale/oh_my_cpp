@@ -1,0 +1,147 @@
+目的：使用C++模板设计队列（链队列和顺序队列）的抽象数据类型（ADT）。并在此基础上，使用队列ADT的基本操作，设计并实现简单应用的算法设计。
+
+内容：（1）请参照栈的ADT模板，设计队列的抽象数据类型。（由于该环境目前仅支持单文件的编译，故将所有内容都集中在一个源文件内。在实际的设计中，推荐将抽象类及对应的派生类分别放在单独的头文件中。参考教材、课件，以及网盘中的栈ADT原型文件，自行设计队列的ADT。）
+
+
+
+（2）ADT的简单应用：使用该ADT设计并实现若干应用队列的算法设计。
+
+
+
+应用：某部队进行新兵队列训练，将新兵从一开始按顺序依次编号，并排成一行横队，训练的规则如下：从头开始一至二报数，凡报到二的出列，剩下的向小序号方向靠拢，再从头开始进行一至三报数，凡报到三的出列，剩下的向小序号方向靠拢，继续从头开始进行一至二报数。。。，以后从头开始轮流进行一至二报数、一至三报数直到剩下的人数不超过三人为止。
+
+要求设计一个算法，使用链队列或顺序队列（只能使用1个队列），设计并实现打印输出剩下的新兵最初的编号的算法。
+
+注意：本题允许有多个测试数据组，新兵总人数不超过5000。由于士兵可能的总人数较多，顺序队列需预先申请的存储空间较大，建议使用链队列。（样例程序使用的是链队列。）
+
+
+
+参考函数原型：
+
+template<class ElemType>
+
+void queuetraining(SqQueue<ElemType> &S, int T); //T为测试数据的组数
+
+
+
+/* 链队列的结点定义 */
+
+template<class ElemType>
+
+struct LinkQueueNode
+
+{
+
+    ElemType data;
+
+    LinkQueueNode<ElemType> *next;
+
+    LinkQueueNode(LinkQueueNode<ElemType> *ptr = NULL){next = ptr;} //构造函数1，用于构造头结点
+
+    LinkQueueNode(const ElemType &item, LinkQueueNode<ElemType> *ptr = NULL) //构造函数2，用于构造其他结点
+
+    //函数参数表中的形参允许有默认值，但是带默认值的参数需要放后面
+
+    {
+
+        next = ptr;
+
+        data = item;
+
+    }
+
+    ElemType getData(){ return data;}  //取得结点中的数据
+
+    void SetLink( LinkQueueNode<ElemType> *link ){ next = link; }  //修改结点的next域
+
+    void SetData( ElemType value ){ data = value; }   //修改结点的data域
+
+};
+
+
+
+//带头结点的链队列
+
+template<class ElemType>
+
+class LinkQueue{
+
+   private:
+
+      LinkQueueNode<ElemType> *front;   // 队头指针
+
+      LinkQueueNode<ElemType> *rear;   // 队尾指针
+
+      int length;   //队列当前元素个数
+
+   public:
+
+      //无参数的构造函数
+
+      LinkQueue();
+
+      //析构函数
+
+      ~LinkQueue(){LinkQueueDestroy();}
+
+      //销毁链队列
+
+      bool LinkQueueDestroy();
+
+      //清空链表
+
+      bool LinkQueueClear();
+
+      //返回链队列的长度
+
+      int QueueLength() const{ return length;}
+
+      //判断链队列是否为空队列
+
+      bool QueueisEmpty() const;
+
+      //出队
+
+      bool deQueue( ElemType &e );
+
+      //入队
+
+      bool enQueue( ElemType e );
+
+      //获取链队列头结点指针
+
+      LinkQueueNode<ElemType>* GetFront() { return front;}
+
+      //获取队头元素
+
+      ElemType GetFrontData(){ return front->data;}
+
+      //获取链队列队尾指针
+
+      LinkQueueNode<ElemType>* GetRear() { return rear;}
+
+      //遍历链队列
+
+      bool QueueTraverse() const;
+
+};
+
+
+
+输入说明 :
+
+第一行：组数N，
+
+第二行-第N+1行：每组的新兵人数
+
+输出说明 :
+
+第一行：
+
+.
+
+.      剩下的新兵最初的编号，编号之间有用","分隔。
+
+.
+
+第N行：
