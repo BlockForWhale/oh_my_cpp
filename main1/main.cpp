@@ -1,8 +1,13 @@
-#include<iostream>
+#include <iostream>
+#include <bitset>
 
 using namespace std;
 
 #define tmpl template<class ElemType>
+#define FARMER 8
+#define GOAT 1
+#define CABBAGE 2
+#define WOLF 4
 
 tmpl
 class SqQueue {
@@ -79,30 +84,57 @@ bool SqQueue<ElemType>::deQueue(ElemType &e) {
     return true;
 }
 
+int goat(int st) { return (st & GOAT) != 0; }
+
+int cabbage(int st) { return (st & CABBAGE) != 0; }
+
+int wolf(int st) { return (st & WOLF) != 0; }
+
+int farmer(int st) { return (st & FARMER) != 0; }
+
+int isSafe(int st) {
+    return (goat(st) == cabbage(st)) && (goat(st) != farmer(st)) ? 0 : (goat(st) == wolf(st)) &&
+                                                                       (goat(st) != farmer(st)) ? 0 : 1;
+}
+
 tmpl
-void tri(SqQueue<ElemType> &sq, int nat) {
-    int a, x;
-    sq.enQueue(1);
-    for (int n = 2; n <= nat + 1; n++) {
-        sq.enQueue(1);
-        for (int i = 1; i <= n - 2; i++) {
-            sq.deQueue(a);
-            cout << a << " ";
-            sq.GetFront(x);
-            a = a + x;
-            sq.enQueue(a);
+void tri(SqQueue<ElemType> &sq) {
+    int pm, st, nn;
+    int ro[16];
+
+    sq.enQueue(0x00);
+
+    for (int i = 0; i < 16; i++) ro[i] = -1;
+
+    ro[0] = 0;
+
+    while (!sq.QueueisEmpty() && (ro[15] == -1)) {
+        sq.deQueue(st);
+        for (pm = 1; pm <= 8; pm <<= 1) {
+            if (farmer(st) == (0 != (st & pm))) {
+                nn = st ^ (8 | pm);
+                if (ro[nn] == -1 && isSafe(nn)) {
+                    ro[nn] = st;
+                    sq.enQueue(nn);
+                }
+            }
         }
-        sq.deQueue(x);
-        if (n == nat + 1) cout << x;
-        else cout << x << endl;
-        sq.enQueue(1);
+    }
+    if (ro[15] != -1) {
+        for (st = 15; st >= 0; st = ro[st]) {
+            bitset<4> bs(st);
+            if (st > 0) cout << bs << endl;
+            else cout << bs;
+            if (st == 0) break;
+        }
+    } else {
+        cout << "No Solution";
     }
 }
 
 int main() {
-    int n;
     SqQueue<int> su;
-    cin >> n;
-    tri(su, n);
+    tri(su);
     return 0;
 }
+
